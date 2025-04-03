@@ -17,8 +17,6 @@ function authMiddleware(roles = []) {
     try {
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
-      console.log("Decoded token:", decoded);
-
       if (!decoded) {
         return res.status(401).send({ error: "Decoded was not found." });
       }

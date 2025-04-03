@@ -121,7 +121,6 @@ class UserController {
     const userValue = await this.findUser(id);
     if (!userValue) throw new AppError("User not found", 404);
 
-    await this.deleteJokesByUserId(id);
     await userValue.destroy();
   }
 
