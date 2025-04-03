@@ -51,7 +51,7 @@ class UserApi {
 
   async deleteUser(req, res) {
     try {
-      const id = req.params.id || req.user.id;
+      const id = req.params.id || req.user.user_id;
 
       await UserController.delete(Number(id));
       return res.status(204).send();
