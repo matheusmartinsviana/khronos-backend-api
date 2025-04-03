@@ -114,7 +114,7 @@ class UserApi {
 
     try {
       const response = await UserController.login(email, password);
-      return res.status(200).send(response.message);
+      return res.status(200).send(response);
     } catch (e) {
       return res.status(400).send({ error: `Error logging: ${e.message}` });
     }

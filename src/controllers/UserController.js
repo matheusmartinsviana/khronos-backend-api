@@ -3,7 +3,7 @@ require("dotenv").config();
 const user = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const AppError = require("../errors/AppError");
+const AppError = require("../Errors/AppError");
 
 // const mailerSend = new MailerSend({
 //   apiKey: process.env.API_KEY,
@@ -59,7 +59,6 @@ class UserController {
 
     const userValue = await user.findByPk(id);
     if (!userValue) throw new AppError("User not found", 404);
-
     return userValue;
   }
 
@@ -171,6 +170,21 @@ class UserController {
     const userValue = await this.findUserByEmail(email);
     const validPassword = await bcrypt.compare(password, userValue.password);
     if (!validPassword) throw new AppError("Invalid email or password", 401);
+    console.log("userValue", userValue);
+
+    const token = jwt.sign(
+      { id: userValue.user_id, role: userValue.role },
+      process.env.SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+
+    return {
+      id: userValue.user_id,
+      name: userValue.name,
+      email: userValue.email,
+      role: userValue.role,
+      token,
+    };
 
     // const accessCode = Math.floor(100000 + Math.random() * 900000);
     // await this.createAccessCode(email, accessCode);
