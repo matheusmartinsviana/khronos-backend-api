@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const UserApi = require("../services/UserService");
+const UserApi = require("../api/UserApi");
 const authMiddleware = require("../middlewares/auth");
 
 router.post("/register", UserApi.createUser);
 router.post("/login", UserApi.login);
-// router.post("/verify-access-code", UserApi.validateAcessCode);
 
 router.put("/", authMiddleware(), UserApi.updateUser);
-router.get("/info", authMiddleware(), UserApi.findUserById);
+router.get("/info", authMiddleware(), UserApi.getCurrentUserInfo);
 router.delete("/", authMiddleware(), UserApi.deleteUser);
 
 router.get("/", authMiddleware(["admin"]), UserApi.findUsers);
