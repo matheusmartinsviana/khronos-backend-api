@@ -1,0 +1,20 @@
+meta {
+  name: Import Products
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8000/api/v1/sheet/getRows
+  body: none
+  auth: bearer
+}
+
+headers {
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InZpZXdlciIsImlhdCI6MTc0Nzc5MTcxMiwiZXhwIjoxNzQ3Nzk1MzEyfQ.ZFAu5z_EKfUFUUetLU_VWOoqHp3dQpVUorLt5qOiMWU
+  : 
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InZpZXdlciIsImlhdCI6MTc0Nzc5MTcxMiwiZXhwIjoxNzQ3Nzk1MzEyfQ.ZFAu5z_EKfUFUUetLU_VWOoqHp3dQpVUorLt5qOiMWU
+}

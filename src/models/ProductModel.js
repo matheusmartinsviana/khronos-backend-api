@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/Database");
-const Category = require("./Category");
+const Category = require("./CategoryModel");
 
 const ProductModel = database.define("Product", {
   product_id: {
@@ -20,8 +20,16 @@ const ProductModel = database.define("Product", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  zoning: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  product_type: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
 });
 
-Product.belongsTo(Category, { foreignKey: "category_id", onDelete: "SET NULL" });
+ProductModel.belongsTo(Category, { foreignKey: "category_id", onDelete: "SET NULL" });
 
 module.exports = ProductModel;

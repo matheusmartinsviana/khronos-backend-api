@@ -13,6 +13,10 @@ const SaleModel = database.define("Sale", {
         type: DataTypes.DOUBLE,
         allowNull: false,
     },
+    sale_type: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
     date: {
         type: DataTypes.DATE,
         allowNull: false,

@@ -27,6 +27,14 @@ const CustomerModel = database.define("Customer", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  adress: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  cep: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = CustomerModel;
