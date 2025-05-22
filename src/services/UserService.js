@@ -96,7 +96,7 @@ class UserService {
         const validPassword = await comparePassword(password, userValue.password);
 
         if (!validPassword) throw new AppError("Invalid email or password", 401);
-        console.log(userValue);
+
         const token = generateToken(
             { id: userValue.user_id, role: userValue.role },
             process.env.SECRET_KEY

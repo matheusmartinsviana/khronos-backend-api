@@ -1,6 +1,6 @@
 const importProductsFromSheet = require("../services/importProductsFromSheet");
 
-const importServiceController = async (req, res) => {
+const importProductController = async (req, res) => {
     try {
         const result = await importProductsFromSheet();
         res.status(200).json({ message: "Importado com sucesso", data: result });
@@ -9,4 +9,4 @@ const importServiceController = async (req, res) => {
     }
 };
 
-module.exports = importServiceController;
+module.exports = importProductController;

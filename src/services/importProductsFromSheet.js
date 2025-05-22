@@ -1,11 +1,11 @@
-const sheetService = require("./sheetProductDataService");
+const sheetProductService = require("./sheetProductDataService");
 const ProductRepository = require("../repositories/ProductRepository");
 const ProductModel = require("../models/ProductModel");
 
 const repository = new ProductRepository(ProductModel);
 
 async function importProductsFromSheet() {
-  const { values } = await sheetService.getRows();
+  const { values } = await sheetProductService.getRows();
 
   if (!values || values.length === 0) return;
 
