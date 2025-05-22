@@ -1,18 +1,17 @@
-const sheetService = require("../services/sheetDataService");
+const sheetService = require("./sheetProductDataService");
 const ProductRepository = require("../repositories/ProductRepository");
 const ProductModel = require("../models/ProductModel");
 
 const repository = new ProductRepository(ProductModel);
 
 async function importProductsFromSheet() {
-  const { values } = await sheetService.getRows(); // assume que o retorno tem `values`
+  const { values } = await sheetService.getRows();
 
   if (!values || values.length === 0) return;
 
   const headers = values[0];
-  const rows = values.slice(1); // remove header
-
-  // Mapeia os dados da planilha
+  const rows = values.slice(1);
+ 
   const mapped = rows
     .map((row) => {
       const obj = {};
@@ -30,12 +29,10 @@ async function importProductsFromSheet() {
         description: obj["OBS"] || null,
       };
     })
-    .filter(Boolean); // remove nulos
+    .filter(Boolean); 
 
-  // ⚠️ Deleta tudo antes de importar
   await repository.deleteAll();
 
-  // Importa os produtos novos
   const saved = await repository.bulkCreate(mapped);
   return saved;
 }
