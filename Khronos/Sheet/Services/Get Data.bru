@@ -1,0 +1,15 @@
+meta {
+  name: Get Data
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:8000/api/v1/sheet/service/getData
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InZpZXdlciIsImlhdCI6MTc0ODEwNDYxNywiZXhwIjoxNzQ4MTA4MjE3fQ.2eWxU6MLHjF1BCG4d-TrWJ4907g9S_u1v2x9Z305G-w
+}

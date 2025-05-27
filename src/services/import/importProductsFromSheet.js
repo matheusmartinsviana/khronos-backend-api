@@ -1,6 +1,6 @@
-const sheetProductService = require("./sheetProductDataService");
-const ProductRepository = require("../repositories/ProductRepository");
-const ProductModel = require("../models/ProductModel");
+const sheetProductService = require("../sheetProductDataService");
+const ProductRepository = require("../../repositories/ProductRepository");
+const ProductModel = require("../../models/ProductModel");
 
 const repository = new ProductRepository(ProductModel);
 

@@ -1,3 +1,4 @@
+const importProductsFromSheet = require("../services/import/importProductsFromSheet");
 const sheetProductDataService = require("../services/sheetProductDataService");
 const parseSheetData = require("../utils/parseSheetRows");
 
@@ -24,4 +25,13 @@ const updateValue = async (req, res) => {
     res.send(result);
 };
 
-module.exports = { getData, getRows, addRow, updateValue };
+const importProductController = async (req, res) => {
+    try {
+        const result = await importProductsFromSheet();
+        res.status(200).json({ message: "Produtos importados com sucesso", data: result });
+    } catch (err) {
+        res.status(500).json({ message: "Erro ao importar", error: err.message });
+    }
+};
+
+module.exports = { getData, getRows, addRow, updateValue, importProductController };

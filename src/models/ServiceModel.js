@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/Database");
 const Category = require("./CategoryModel");
 
-const ProductModel = database.define("Product", {
+const ServiceModel = database.define("Service", {
   product_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -42,6 +42,6 @@ const ProductModel = database.define("Product", {
   },
 });
 
-ProductModel.belongsTo(Category, { foreignKey: "category_id", onDelete: "SET NULL" });
+ServiceModel.belongsTo(Category, { foreignKey: "category_id", onDelete: "SET NULL" });
 
-module.exports = ProductModel;
+module.exports = ServiceModel;

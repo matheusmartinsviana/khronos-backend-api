@@ -1,11 +1,11 @@
 meta {
   name: Import Products
   type: http
-  seq: 3
+  seq: 2
 }
 
-get {
-  url: http://localhost:8000/api/v1/sheet/getRows
+post {
+  url: http://localhost:8000/api/v1/sheet/product/import-products
   body: none
   auth: bearer
 }
@@ -16,5 +16,5 @@ headers {
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InZpZXdlciIsImlhdCI6MTc0Nzc5MTcxMiwiZXhwIjoxNzQ3Nzk1MzEyfQ.ZFAu5z_EKfUFUUetLU_VWOoqHp3dQpVUorLt5qOiMWU
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InZpZXdlciIsImlhdCI6MTc0ODEwNzc0NSwiZXhwIjoxNzQ4MTExMzQ1fQ.NCNjGouJVhzne0u-hSHT9RnNrEof4ljND3ekHiesQuY
 }
