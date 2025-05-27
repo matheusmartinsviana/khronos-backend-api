@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "node --watch src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --detectOpenHandles"
   },
   "keywords": [
     "backend",
@@ -20,9 +20,11 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "googleapis": "^105.0.0",
+    "jest": "^30.0.0-beta.3",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.14.1",
     "sequelize": "^6.37.7",
+    "supertest": "^7.1.1",
     "xlsx": "^0.18.5"
   }
 }

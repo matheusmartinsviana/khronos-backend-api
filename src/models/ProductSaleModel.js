@@ -1,9 +1,7 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/Database");
-const Product = require("./Product");
-const Sale = require("./Sale");
 
-const ProductSaleModel = database.define("ProductSale", {
+const ProductSale = database.define("ProductSales", {
   product_sale_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -13,9 +11,13 @@ const ProductSaleModel = database.define("ProductSale", {
     type: DataTypes.DOUBLE,
     allowNull: false,
   },
+  total_sales: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  zoning: {
+    type: DataTypes.STRING,
+  },
 });
 
-ProductSale.belongsTo(Product, { foreignKey: "product_id", onDelete: "CASCADE" });
-ProductSale.belongsTo(Sale, { foreignKey: "sale_id", onDelete: "CASCADE" });
-
-module.exports = ProductSaleModel;
+module.exports = ProductSale;

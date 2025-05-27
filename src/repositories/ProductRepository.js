@@ -12,7 +12,7 @@ class ProductRepository {
     }
 
     async deleteAll() {
-        return await this.ProductModel.destroy({ where: {}, truncate: true });
+        return await this.ProductModel.destroy({ where: {} });
     }
 
     async findAll() {

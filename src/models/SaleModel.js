@@ -1,9 +1,7 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/Database");
-const Salesperson = require("./Salesperson");
-const Customer = require("./Customer");
 
-const SaleModel = database.define("Sale", {
+const Sale = database.define("Sale", {
     sale_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -14,7 +12,7 @@ const SaleModel = database.define("Sale", {
         allowNull: false,
     },
     sale_type: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
         allowNull: false,
     },
     date: {
@@ -24,7 +22,4 @@ const SaleModel = database.define("Sale", {
     },
 });
 
-Sale.belongsTo(Salesperson, { foreignKey: "seller_id", onDelete: "CASCADE" });
-Sale.belongsTo(Customer, { foreignKey: "customer_id", onDelete: "CASCADE" });
-
-module.exports = SaleModel;
+module.exports = Sale;

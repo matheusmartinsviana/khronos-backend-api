@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/Database");
-const Category = require("./CategoryModel");
 
 const ProductModel = database.define("Product", {
   product_id: {
@@ -41,7 +40,5 @@ const ProductModel = database.define("Product", {
     allowNull: true,
   },
 });
-
-ProductModel.belongsTo(Category, { foreignKey: "category_id", onDelete: "SET NULL" });
 
 module.exports = ProductModel;

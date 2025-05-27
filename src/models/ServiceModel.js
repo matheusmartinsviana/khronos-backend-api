@@ -42,6 +42,5 @@ const ServiceModel = database.define("Service", {
   },
 });
 
-ServiceModel.belongsTo(Category, { foreignKey: "category_id", onDelete: "SET NULL" });
 
 module.exports = ServiceModel;

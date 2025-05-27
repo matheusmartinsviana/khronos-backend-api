@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/Database");
-const User = require("./User");
-const Category = require("./Category");
+const User = require("./UserModel");
+const Category = require("./CategoryModel");
 
 const SalespersonModel = database.define("Salesperson", {
   seller_id: {
@@ -14,8 +14,5 @@ const SalespersonModel = database.define("Salesperson", {
     defaultValue: 0,
   },
 });
-
-Salesperson.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
-Salesperson.belongsTo(Category, { foreignKey: "category_id", onDelete: "SET NULL" });
 
 module.exports = SalespersonModel;
