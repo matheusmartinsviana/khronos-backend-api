@@ -6,6 +6,35 @@ meta {
 
 post {
   url: http://localhost:8000/api/v1/sales/
-  body: none
-  auth: inherit
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InZpZXdlciIsImlhdCI6MTc0ODMyODQxMSwiZXhwIjoxNzQ4MzMyMDExfQ.JgLlwSNMIx8SPKG5Ou7TYvnIBxJuSTndsCVr3tH_54k
+}
+
+body:json {
+  {
+    "amount": 250.50,
+    "sale_type": "online",
+    "date": "2025-05-27T12:00:00.000Z",
+    "seller_id": 1,
+    "customer_id": 1,
+    "products": [
+      {
+        "product_id": 1,
+        "product_price": 100.00,
+        "total_sales": 2,
+        "zoning": "A"
+      },
+      {
+        "product_id": 2,
+        "product_price": 50.25,
+        "total_sales": 1,
+        "zoning": "B"
+      }
+    ]
+  }
+  
 }
