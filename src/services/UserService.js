@@ -3,9 +3,10 @@ const user = require("../models/UserModel");
 const { hashPassword, comparePassword } = require("../utils/hash");
 const { generateToken } = require("../utils/jwt");
 const AppError = require("../errors/AppError");
+const Salesperson = require("../models/SalespersonModel");
 
 class UserService {
-    async create(name, email, password, role) {
+    async create(name, email, password, role, category_id) {
         if (!name || !email || !password) {
             throw new AppError("Name, email, and password are required.", 400);
         }
@@ -13,7 +14,28 @@ class UserService {
         const hashed = await hashPassword(password, process.env.SALT_VALUE);
 
         try {
-            return await user.create({ name, email, password: hashed, role });
+            console.log("Creating user with role:", role);
+            const createdUser = await user.create({ name, email, password: hashed, role });
+
+            if (role === "salesperson") {
+                // if (!category_id) {
+                //     throw new AppError("Category ID is required for salesperson role.", 400);
+                // }
+
+                const resp = await Salesperson.create({ user_id: createdUser.user_id, category_id: category_id || 1 });
+                console.log("Salesperson created with ID:", resp.salesperson_id);
+            } else if (role !== "admin" && role !== "viewer") {
+                throw new AppError("Invalid role. Allowed roles are 'admin', 'viewer', or 'salesperson'.", 400);
+            }
+
+            console.log("User created successfully:", createdUser);
+            return {
+                id: createdUser.user_id,
+                name: createdUser.name,
+                email: createdUser.email,
+                role: createdUser.role,
+            };
+
         } catch (error) {
             if (error.parent?.code === "23505") {
                 throw new AppError("This email is already registered.", 409);
@@ -21,6 +43,7 @@ class UserService {
             if (error.errors?.[0]?.validatorKey === "isEmail") {
                 throw new AppError("The provided email is not valid.", 400);
             }
+            console.error("Error creating user:", error);
             throw new AppError("An error occurred while creating the user. Please try again.");
         }
     }

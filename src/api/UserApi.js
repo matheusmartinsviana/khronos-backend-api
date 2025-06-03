@@ -124,6 +124,18 @@ class UserApi {
       return res.status(400).send({ error: `Error logging: ${e.message}` });
     }
   }
+
+  async createSalesperson(req, res) {
+    const { name, email, password } = req.body;
+    const role = "salesperson";
+    try {
+      const user = await UserController.create(name, email, password, role);
+      return res.status(201).send(user);
+    } catch (e) {
+      return res.status(400).send({ error: e.message });
+    }
+  }
+
 }
 
 module.exports = new UserApi();

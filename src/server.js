@@ -5,7 +5,9 @@ const database = require("./config/Database");
 const userRouter = require("./routes/UserRoute");
 const sheetProductDataRouter = require("./routes/sheetProductDataRoutes");
 const sheetServiceDataRouter = require("./routes/sheetServiceDataRoutes");
-const saleRoutes = require("./routes/saleRoute");
+const saleRoutes = require("./routes/SaleRoute");
+const customerRouter = require("./routes/CustomerRoute");
+
 require("./models/associations");
 
 const app = express();
@@ -18,6 +20,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/sheet/product", sheetProductDataRouter);
 app.use("/api/v1/sheet/service", sheetServiceDataRouter);
 app.use("/api/v1/sales", saleRoutes);
+app.use("/api/v1/customer", customerRouter);
 
 app.get("/", (_, res) => {
   res.send({ message: `Hello world!` });

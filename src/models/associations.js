@@ -26,5 +26,7 @@ SalespersonModel.belongsTo(CategoryModel, { foreignKey: "category_id", onDelete:
 // User → Salesperson
 UserModel.hasOne(SalespersonModel, { foreignKey: "user_id" });
 
+CategoryModel.hasMany(SalespersonModel, { foreignKey: "category_id" });
+
 // Customer → Sale
 CustomerModel.hasMany(Sale, { foreignKey: "customer_id" });

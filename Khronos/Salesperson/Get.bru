@@ -1,0 +1,23 @@
+meta {
+  name: Get
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8000/api/v1/customer
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ4OTA1MjMxLCJleHAiOjE3NDg5MDg4MzF9.dVwRpgxeI4a6hfH0tvFQV5TkwZT_mmROGvhHL9uQEhU
+}
+
+body:json {
+  {
+    "name": "User21",
+    "email": "user1311@domain.com",
+    "password": "123456"
+  }
+}

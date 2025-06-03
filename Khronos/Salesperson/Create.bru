@@ -1,0 +1,23 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8000/api/v1/user/salesperson
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0ODkwOTgzMCwiZXhwIjoxNzQ4OTEzNDMwfQ.NLlpR9Jjqq95uEyMRYNV8f1orSC0eBkuIP-r--R3u7E
+}
+
+body:json {
+  {
+    "name": "User21",
+    "email": "user13111a12s1@domain.com",
+    "password": "123456"
+  }
+}
