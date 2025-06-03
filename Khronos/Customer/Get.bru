@@ -1,23 +1,15 @@
 meta {
-  name: Create
+  name: Get
   type: http
-  seq: 1
+  seq: 4
 }
 
-post {
-  url: http://localhost:8000/api/v1/user/salesperson
-  body: json
+get {
+  url: http://localhost:8000/api/v1/customer
+  body: none
   auth: bearer
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ4OTE4OTc2LCJleHAiOjE3NDg5MjI1NzZ9.2ZOEA9dft-FzjdMT8LCgWKEgO1m2DiMgy9pZ6Or9qas
-}
-
-body:json {
-  {
-    "name": "User21",
-    "email": "user31a11a@domain.com",
-    "password": "123456"
-  }
 }

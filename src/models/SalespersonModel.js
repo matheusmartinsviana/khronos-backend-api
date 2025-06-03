@@ -24,17 +24,6 @@ const SalespersonModel = database.define(
         key: "user_id",
       },
     },
-    category_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 1,
-      references: {
-        model: Category,
-        key: "category_id",
-      },
-      onDelete: "SET NULL",
-      onUpdate: "CASCADE",
-    },
   },
   {
     timestamps: false,

@@ -5,7 +5,18 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/api/v1
-  body: none
-  auth: inherit
+  url: http://localhost:8000/api/v1/customer
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ4OTE4OTc2LCJleHAiOjE3NDg5MjI1NzZ9.2ZOEA9dft-FzjdMT8LCgWKEgO1m2DiMgy9pZ6Or9qas
+}
+
+body:json {
+  {
+    "name": "teste",
+    "contact": "teste"
+  }
 }
