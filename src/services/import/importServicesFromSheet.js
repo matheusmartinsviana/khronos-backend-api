@@ -1,5 +1,5 @@
 const sheetServiceService = require("../sheetServiceDataService");
-const ServiceRepository = require("../../repositories/ServiceRepository");
+const ServiceRepository = require("../../repositories/ServiceSheetRepository");
 const ServiceModel = require("../../models/ServiceModel");
 
 const repository = new ServiceRepository(ServiceModel);

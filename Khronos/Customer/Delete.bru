@@ -5,7 +5,11 @@ meta {
 }
 
 delete {
-  url: http://localhost:8000/api/v1/customer
+  url: http://localhost:8000/api/v1/customer/2
   body: none
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ5MDA0NzEwLCJleHAiOjE3NDkwMDgzMTB9.GEIsuIV1Xpk0lCXO_JmIQRDaZbMoUqkLESXQIYKvYcY
 }

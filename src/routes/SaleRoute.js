@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const SaleController = require("../controllers/SaleController");
+const controller = require("../controllers/sheetProductDataController");
+const authMiddleware = require("../middlewares/auth");
 
-router.post("/", SaleController.create);
-router.get("/", SaleController.getAll);
-router.get("/:id", SaleController.getById);
-router.put("/:id", SaleController.update);
-router.delete("/:id", SaleController.delete);
+router.get("/getData", authMiddleware(), controller.getData);
+router.get("/getRows", authMiddleware(), controller.getRows);
+router.post("/addRow", authMiddleware(), controller.addRow);
+router.post("/updateValue", authMiddleware(), controller.updateValue);
+router.post("/import-products", authMiddleware(), controller.importProductController);
 
 module.exports = router;

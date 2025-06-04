@@ -1,15 +1,23 @@
 meta {
-  name: Get
+  name: Create
   type: http
-  seq: 4
+  seq: 3
 }
 
-get {
-  url: http://localhost:8000/api/v1/customer
-  body: none
+post {
+  url: http://localhost:8000/api/v1/service
+  body: json
   auth: bearer
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ5MDA0NzEwLCJleHAiOjE3NDkwMDgzMTB9.GEIsuIV1Xpk0lCXO_JmIQRDaZbMoUqkLESXQIYKvYcY
+}
+
+body:json {
+  {
+    "name": "teste",
+    "price": "99999",
+    "product_type": "teste"
+  }
 }

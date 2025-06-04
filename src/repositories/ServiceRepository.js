@@ -1,23 +1,15 @@
-class ServiceRepository {
-    constructor(ServiceModel) {
-        this.ServiceModel = ServiceModel;
-    }
+const ServiceModel = require("../models/ServiceModel");
 
-    async create(serviceData) {
-        return await this.ServiceModel.create(serviceData);
-    }
+const ServiceRepository = {
+    create: async (data) => await ServiceModel.create(data),
 
-    async bulkCreate(servicesData) {
-        return await this.ServiceModel.bulkCreate(servicesData);
-    }
+    findAll: () => ServiceModel.findAll(),
 
-    async deleteAll() {
-        return await this.ServiceModel.destroy({ where: {}, truncate: true });
-    }Z
+    findById: (id) => ServiceModel.findByPk(id),
 
-    async findAll() {
-        return await this.ServiceModel.findAll();
-    }
-}
+    update: (id, data) => ServiceModel.update(data, { where: { product_id: id } }),
+
+    delete: (id) => ServiceModel.destroy({ where: { product_id: id } }),
+};
 
 module.exports = ServiceRepository;
