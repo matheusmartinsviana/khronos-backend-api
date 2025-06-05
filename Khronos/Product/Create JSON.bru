@@ -1,17 +1,17 @@
 meta {
-  name: Create
+  name: Create JSON
   type: http
-  seq: 1
+  seq: 5
 }
 
 post {
   url: http://localhost:8000/api/v1/product/
-  body: multipartForm
+  body: json
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ5MDg0NjE5LCJleHAiOjE3NDkwODgyMTl9.7O8UKCSADXqs9MgPDQbO8vp97nBnyI2ce0qYw-I8fuU
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ5MDg0ODQ3LCJleHAiOjE3NDkwODg0NDd9.7e1PdOB6L-7E9Qa---CnAxLY0g0jg2taKPDWN76ytVA
 }
 
 body:json {
@@ -32,5 +32,5 @@ body:multipart-form {
   name: teste
   price: 1212
   product_type: 2
-  image: @file(C:\Users\mathe\Downloads\wp6076938.webp)
+  image: @file(C:\Users\mathe\Downloads\ChatGPT Image 29 de mai. de 2025, 03_02_52.png)
 }

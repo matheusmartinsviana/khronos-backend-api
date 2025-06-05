@@ -1,15 +1,15 @@
 require("dotenv").config()
 const ProductRepository = require("../repositories/ProductRepository")
 const ProductModel = require("../models/ProductModel")
+const ImageUploadService = require("./ImageUploadService")
 const AppError = require("../errors/AppError")
-const { Op } = require("sequelize")
 
 class ProductService {
     constructor() {
         this.productRepository = new ProductRepository(ProductModel)
     }
 
-    async create(name, code, price, description, zoning, product_type, observation, segment, image) {
+    async create(name, code, price, description, zoning, product_type, observation, segment, image, image_public_id) {
         if (!name || !price || !product_type) {
             throw new AppError("Name, price, and product_type are required.", 400)
         }
@@ -37,6 +37,7 @@ class ProductService {
                 observation,
                 segment,
                 image,
+                image_public_id,
             }
 
             const createdProduct = await this.productRepository.create(productData)
@@ -53,6 +54,7 @@ class ProductService {
                 observation: createdProduct.observation,
                 segment: createdProduct.segment,
                 image: createdProduct.image,
+                image_public_id: createdProduct.image_public_id,
             }
         } catch (error) {
             if (error instanceof AppError) {
@@ -66,7 +68,7 @@ class ProductService {
     async findProduct(id) {
         if (!id) throw new AppError("Id is required", 400)
 
-        const found = await this.productRepository.findByIdWithImages(id)
+        const found = await this.productRepository.findById(id)
         if (!found) throw new AppError("Product not found", 404)
 
         return found
@@ -101,7 +103,7 @@ class ProductService {
         return await this.productRepository.findByPriceRange(minPrice, maxPrice)
     }
 
-    async update(id, name, code, price, description, zoning, product_type, observation, segment, image) {
+    async update(id, name, code, price, description, zoning, product_type, observation, segment, image, image_public_id) {
         if (!id) {
             throw new AppError("Id is required", 400)
         }
@@ -130,6 +132,7 @@ class ProductService {
         if (observation !== undefined) updateData.observation = observation
         if (segment !== undefined) updateData.segment = segment
         if (image !== undefined) updateData.image = image
+        if (image_public_id !== undefined) updateData.image_public_id = image_public_id
 
         const updatedProduct = await this.productRepository.update(id, updateData)
         return updatedProduct
@@ -139,6 +142,12 @@ class ProductService {
         if (!id) throw new AppError("Id is required", 400)
 
         const product = await this.findProduct(id)
+
+        // Deletar imagem do Cloudinary se existir
+        if (product.image_public_id) {
+            await ImageUploadService.deleteImage(product.image_public_id)
+        }
+
         await this.productRepository.delete(id)
     }
 
@@ -175,6 +184,7 @@ class ProductService {
                 observation: product.observation,
                 segment: product.segment,
                 image: product.image,
+                image_public_id: product.image_public_id,
             }))
         } catch (error) {
             console.error("Error creating products in bulk:", error)
@@ -183,11 +193,17 @@ class ProductService {
     }
 
     async deleteAll() {
-        return await this.productRepository.deleteAll()
-    }
+        // Buscar todos os produtos para deletar suas imagens do Cloudinary
+        const products = await this.productRepository.findAll()
 
-    async findWithPrimaryImage() {
-        return await this.productRepository.findAllWithPrimaryImage()
+        // Deletar imagens do Cloudinary
+        for (const product of products) {
+            if (product.image_public_id) {
+                await ImageUploadService.deleteImage(product.image_public_id)
+            }
+        }
+
+        return await this.productRepository.deleteAll()
     }
 }
 

@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const database = require("../config/Database");
+const { DataTypes } = require("sequelize")
+const database = require("../config/Database")
 
 const ProductModel = database.define("Product", {
   product_id: {
@@ -39,6 +39,16 @@ const ProductModel = database.define("Product", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-});
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: "Cloudinary URL of the product image",
+  },
+  image_public_id: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: "Cloudinary public ID for image management",
+  },
+})
 
-module.exports = ProductModel;
+module.exports = ProductModel

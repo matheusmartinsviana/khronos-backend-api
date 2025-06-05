@@ -122,7 +122,7 @@ class UserService {
 
         const token = generateToken(
             { id: userValue.user_id, role: userValue.role },
-            process.env.SECRET_KEY
+            process.env.SECRET_KEY,
         );
 
         return {

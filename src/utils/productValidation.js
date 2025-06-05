@@ -20,17 +20,7 @@ class ProductValidation {
     }
 
     static validateUpdateData(updateData) {
-        const allowedFields = [
-            "name",
-            "code",
-            "price",
-            "description",
-            "zoning",
-            "product_type",
-            "observation",
-            "segment",
-            "image",
-        ]
+        const allowedFields = ["name", "code", "price", "description", "zoning", "product_type", "observation", "segment"]
         const providedFields = Object.keys(updateData)
 
         // Verificar se pelo menos um campo foi fornecido
@@ -60,12 +50,6 @@ class ProductValidation {
         if (updateData.product_type !== undefined) {
             if (typeof updateData.product_type !== "string" || updateData.product_type.trim().length === 0) {
                 throw new AppError("Product type must be a valid string.", 400)
-            }
-        }
-
-        if (updateData.image !== undefined) {
-            if (typeof updateData.image !== "string") {
-                throw new AppError("Image must be a valid string (URL or path).", 400)
             }
         }
 

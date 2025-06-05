@@ -2,11 +2,22 @@ const AppError = require("../errors/AppError")
 const ProductService = require("../services/ProductService")
 
 class ProductController {
-    async create(name, code, price, description, zoning, product_type, observation, segment, image) {
+    async create(name, code, price, description, zoning, product_type, observation, segment, image, image_public_id) {
         if (!name || !price || !product_type) {
             throw new AppError("Name, price, and product_type are required.", 400)
         }
-        return ProductService.create(name, code, price, description, zoning, product_type, observation, segment, image)
+        return ProductService.create(
+            name,
+            code,
+            price,
+            description,
+            zoning,
+            product_type,
+            observation,
+            segment,
+            image,
+            image_public_id,
+        )
     }
 
     async findProduct(id) {
@@ -42,11 +53,23 @@ class ProductController {
         return ProductService.findByPriceRange(minPrice, maxPrice)
     }
 
-    async update(id, name, code, price, description, zoning, product_type, observation, segment, image) {
+    async update(id, name, code, price, description, zoning, product_type, observation, segment, image, image_public_id) {
         if (!id) {
             throw new AppError("Id is required", 400)
         }
-        return ProductService.update(id, name, code, price, description, zoning, product_type, observation, segment, image)
+        return ProductService.update(
+            id,
+            name,
+            code,
+            price,
+            description,
+            zoning,
+            product_type,
+            observation,
+            segment,
+            image,
+            image_public_id,
+        )
     }
 
     async delete(id) {
@@ -63,6 +86,7 @@ class ProductController {
             throw new AppError("Products array is required", 400)
         }
 
+        // Validar cada produto
         for (let i = 0; i < products.length; i++) {
             const product = products[i]
             if (!product.name || !product.price || !product.product_type) {

@@ -1,10 +1,58 @@
 const ProductController = require("../controllers/ProductController")
+const ImageUploadService = require("../services/ImageUploadService")
+const multer = require("multer")
+
+// Configuração do multer para upload em memória (não salvar no disco)
+const storage = multer.memoryStorage()
+
+const fileFilter = (req, file, cb) => {
+    // Aceitar apenas imagens
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
+
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true)
+    } else {
+        cb(new Error("Only image files (JPEG, PNG, GIF, WebP) are allowed!"), false)
+    }
+}
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 10 * 1024 * 1024, // 10MB limit
+    },
+})
 
 class ProductApi {
     async createProduct(req, res) {
-        const { name, code, price, description, zoning, product_type, observation, segment, image } = req.body
+        const { name, code, price, description, zoning, product_type, observation, segment } = req.body
 
         try {
+            let imageUrl = null
+            let imagePublicId = null
+
+            // Se há arquivo de imagem, fazer upload para Cloudinary
+            if (req.file) {
+                console.log("File received:", {
+                    originalname: req.file.originalname,
+                    mimetype: req.file.mimetype,
+                    size: req.file.size,
+                    hasBuffer: !!req.file.buffer,
+                    bufferLength: req.file.buffer ? req.file.buffer.length : 0,
+                })
+
+                const uploadResult = await ImageUploadService.uploadImage(req.file, {
+                    folder: "products",
+                    public_id: `product_${Date.now()}`, // ID único para o produto
+                })
+
+                imageUrl = uploadResult.url
+                imagePublicId = uploadResult.public_id
+
+                console.log("Upload successful:", { imageUrl, imagePublicId })
+            }
+
             const product = await ProductController.create(
                 name,
                 code,
@@ -14,19 +62,51 @@ class ProductApi {
                 product_type,
                 observation,
                 segment,
-                image,
+                imageUrl,
+                imagePublicId,
             )
+
             return res.status(201).send(product)
         } catch (e) {
+            console.error("Error in createProduct:", e)
             return res.status(400).send({ error: e.message })
         }
     }
 
     async updateProduct(req, res) {
         const { id } = req.params
-        const { name, code, price, description, zoning, product_type, observation, segment, image } = req.body
+        const { name, code, price, description, zoning, product_type, observation, segment } = req.body
 
         try {
+            let imageUrl = undefined
+            let imagePublicId = undefined
+
+            // Se há arquivo de imagem, fazer upload para Cloudinary
+            if (req.file) {
+                console.log("File received for update:", {
+                    originalname: req.file.originalname,
+                    mimetype: req.file.mimetype,
+                    size: req.file.size,
+                    hasBuffer: !!req.file.buffer,
+                })
+
+                // Buscar produto atual para deletar imagem antiga
+                const currentProduct = await ProductController.findProduct(id)
+
+                const uploadResult = await ImageUploadService.uploadImage(req.file, {
+                    folder: "products",
+                    public_id: `product_${id}_${Date.now()}`,
+                })
+
+                imageUrl = uploadResult.url
+                imagePublicId = uploadResult.public_id
+
+                // Deletar imagem antiga do Cloudinary
+                if (currentProduct.image_public_id) {
+                    await ImageUploadService.deleteImage(currentProduct.image_public_id)
+                }
+            }
+
             const product = await ProductController.update(
                 id,
                 name,
@@ -37,10 +117,13 @@ class ProductApi {
                 product_type,
                 observation,
                 segment,
-                image,
+                imageUrl,
+                imagePublicId,
             )
+
             return res.status(200).send(product)
         } catch (e) {
+            console.error("Error in updateProduct:", e)
             return res.status(400).send({ error: `Error updating product: ${e.message}` })
         }
     }
@@ -49,7 +132,16 @@ class ProductApi {
         try {
             const { id } = req.params
 
+            // Buscar produto para obter public_id da imagem antes de deletar
+            const product = await ProductController.findProduct(id)
+
             await ProductController.delete(Number(id))
+
+            // Deletar imagem do Cloudinary se existir
+            if (product.image_public_id) {
+                await ImageUploadService.deleteImage(product.image_public_id)
+            }
+
             return res.status(204).send()
         } catch (e) {
             return res.status(400).send({ error: `Error deleting product: ${e.message}` })
@@ -142,6 +234,104 @@ class ProductApi {
         } catch (e) {
             return res.status(400).send({ error: `Error deleting all products: ${e.message}` })
         }
+    }
+
+    async updateProductImage(req, res) {
+        const { id } = req.params
+
+        try {
+            if (!req.file) {
+                return res.status(400).send({ error: "Image file is required" })
+            }
+
+            console.log("File received for image update:", {
+                originalname: req.file.originalname,
+                mimetype: req.file.mimetype,
+                size: req.file.size,
+                hasBuffer: !!req.file.buffer,
+            })
+
+            // Buscar produto atual para deletar imagem antiga
+            const currentProduct = await ProductController.findProduct(id)
+
+            const uploadResult = await ImageUploadService.uploadImage(req.file, {
+                folder: "products",
+                public_id: `product_${id}_${Date.now()}`,
+            })
+
+            const product = await ProductController.update(
+                id,
+                undefined, // name
+                undefined, // code
+                undefined, // price
+                undefined, // description
+                undefined, // zoning
+                undefined, // product_type
+                undefined, // observation
+                undefined, // segment
+                uploadResult.url, // image
+                uploadResult.public_id, // image_public_id
+            )
+
+            // Deletar imagem antiga do Cloudinary
+            if (currentProduct.image_public_id) {
+                await ImageUploadService.deleteImage(currentProduct.image_public_id)
+            }
+
+            return res.status(200).send(product)
+        } catch (e) {
+            console.error("Error in updateProductImage:", e)
+            return res.status(400).send({ error: `Error updating product image: ${e.message}` })
+        }
+    }
+
+    async getImageVariations(req, res) {
+        const { id } = req.params
+        const { width, height, quality } = req.query
+
+        try {
+            const product = await ProductController.findProduct(id)
+
+            if (!product.image_public_id) {
+                return res.status(404).send({ error: "Product has no image" })
+            }
+
+            const variations = {
+                original: product.image,
+                thumbnail: ImageUploadService.generateThumbnail(product.image_public_id),
+                medium: ImageUploadService.generateImageUrl(product.image_public_id, {
+                    width: 400,
+                    height: 400,
+                    crop: "limit",
+                    quality: "auto",
+                }),
+                large: ImageUploadService.generateImageUrl(product.image_public_id, {
+                    width: 800,
+                    height: 800,
+                    crop: "limit",
+                    quality: "auto",
+                }),
+            }
+
+            // Se dimensões específicas foram solicitadas
+            if (width || height) {
+                variations.custom = ImageUploadService.generateImageUrl(product.image_public_id, {
+                    width: width ? Number.parseInt(width) : undefined,
+                    height: height ? Number.parseInt(height) : undefined,
+                    crop: "limit",
+                    quality: quality || "auto",
+                })
+            }
+
+            return res.status(200).send(variations)
+        } catch (e) {
+            return res.status(400).send({ error: `Error getting image variations: ${e.message}` })
+        }
+    }
+
+    // Middleware para upload de imagem
+    uploadSingle() {
+        return upload.single("image")
     }
 }
 
