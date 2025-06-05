@@ -6,10 +6,10 @@
     "node_modules",
     ".git"
   ],
-  "size": 0,
-  "filesCount": 0,
+  "size": 0.011079788208007812,
+  "filesCount": 38,
   "presets": {
     "requestType": "http",
-    "requestUrl": "http://localhost:3000/api/v1"
+    "requestUrl": "https://khronos-api.onrender.com/api/v1"
   }
 }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "dev": "node --watch src/server.js",
+    "start": "node --watch src/server.js",
     "test": "jest --detectOpenHandles"
   },
   "keywords": [
