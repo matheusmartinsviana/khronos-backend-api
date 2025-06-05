@@ -1,0 +1,22 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8000/api/v1/product/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ5MDc2NzU3LCJleHAiOjE3NDkwODAzNTd9.8cL6auoL6HGJa8Ek-oeIWl9XOBGJy94lGlPTigIH_n0
+}
+
+body:json {
+  {
+    "name": "testete"
+  }
+  
+}

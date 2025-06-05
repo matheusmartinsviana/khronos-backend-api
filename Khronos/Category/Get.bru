@@ -1,0 +1,15 @@
+meta {
+  name: Get
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:8000/api/v1/category
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ5MDA0NzEwLCJleHAiOjE3NDkwMDgzMTB9.GEIsuIV1Xpk0lCXO_JmIQRDaZbMoUqkLESXQIYKvYcY
+}

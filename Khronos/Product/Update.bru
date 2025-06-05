@@ -1,0 +1,29 @@
+meta {
+  name: Update
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8000/api/v1/product/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ5MDc2NzU3LCJleHAiOjE3NDkwODAzNTd9.8cL6auoL6HGJa8Ek-oeIWl9XOBGJy94lGlPTigIH_n0
+}
+
+body:json {
+  {
+    "name": "Solar Garden Premium",
+    "code": "SGP-0012131",
+    "price": 175000.00,
+    "description": "Terreno localizado em área nobre, ideal para construção de residências de alto padrão.",
+    "zoning": "Residencial Unifamiliar",
+    "product_type": "Terreno",
+    "observation": "Disponível para financiamento bancário.",
+    "segment": "Imobiliário"
+  }
+  
+}
