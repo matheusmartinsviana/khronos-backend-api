@@ -3,9 +3,6 @@ const router = express.Router();
 const UserApi = require("../api/UserApi");
 const authMiddleware = require("../middlewares/auth");
 
-router.post("/register", UserApi.createUser);
-router.post("/login", UserApi.login);
-
 router.put("/", authMiddleware(), UserApi.updateUser);
 router.get("/info", authMiddleware(), UserApi.getCurrentUserInfo);
 router.delete("/", authMiddleware(), UserApi.deleteUser);
