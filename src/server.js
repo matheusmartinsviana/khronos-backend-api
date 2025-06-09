@@ -10,7 +10,7 @@ const customerRouter = require("./routes/CustomerRoute");
 const serviceRouter = require("./routes/ServicesRoute");
 const productRouter = require("./routes/ProductRoutes");
 const categoryRouter = require("./routes/CategoryRoutes");
-const UserApi = require("./api/UserApi");
+const authRoutes = require("./routes/AuthRoutes");
 
 require("./models/associations");
 
@@ -20,9 +20,7 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(cors());
 
-app.post("/api/v1/auth/register", UserApi.createUser);
-app.post("/api/v1/auth/login", UserApi.login);
-
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/sheet/product", sheetProductDataRouter);
 app.use("/api/v1/sheet/service", sheetServiceDataRouter);
 app.use("/api/v1/user", userRouter);

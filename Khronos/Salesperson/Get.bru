@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/users/salesperson
+  url: http://localhost:8000/api/v1/user/salesperson/12
   body: json
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ4OTA5MzYzLCJleHAiOjE3NDg5MTI5NjN9.C7ihjmp2rA8XbgRvsegH-5n0qJyPQSfzaKOoV8_bMO8
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ5NDI0MzM5LCJleHAiOjE3NDk0Mjc5Mzl9.vcuOTQj_MnyQ-a6YxunWarP4kmyESbq_6Y2NUCW4jvk
 }
 
 body:json {

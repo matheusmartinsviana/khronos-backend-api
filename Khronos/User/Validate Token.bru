@@ -1,0 +1,11 @@
+meta {
+  name: Validate Token
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8000/api/v1/auth/validate-token
+  body: none
+  auth: inherit
+}
