@@ -6,10 +6,22 @@
     "node_modules",
     ".git"
   ],
-  "size": 0.011079788208007812,
-  "filesCount": 38,
+  "size": 0.014746665954589844,
+  "filesCount": 50,
   "presets": {
     "requestType": "http",
     "requestUrl": "https://khronos-api.onrender.com/api/v1"
+  },
+  "proxy": {
+    "bypassProxy": "",
+    "enabled": "global",
+    "auth": {
+      "enabled": false,
+      "username": "",
+      "password": ""
+    },
+    "port": null,
+    "hostname": "",
+    "protocol": "http"
   }
 }

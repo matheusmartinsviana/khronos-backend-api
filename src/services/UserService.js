@@ -133,6 +133,16 @@ class UserService {
             token,
         };
     }
+
+    async findSalespersonById(id) {
+        if (!id) throw new AppError("Id is required", 400);
+
+        const found = await Salesperson.findOne({ where: { user_id: id } });
+        if (!found) throw new AppError("Salesperson not found", 404);
+
+        return found;
+    }
+
 }
 
 module.exports = new UserService();

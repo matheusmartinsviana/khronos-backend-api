@@ -51,6 +51,12 @@ class UserController {
     }
     return UserService.login(email, password);
   }
+
+  async findSalespersonById(id) {
+    if (!id) throw new AppError("Id is required", 400);
+    return UserService.findSalespersonById(id);
+  }
+
 }
 
 module.exports = new UserController();

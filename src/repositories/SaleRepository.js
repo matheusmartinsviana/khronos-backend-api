@@ -15,6 +15,16 @@ const SaleRepository = {
     delete: async (id) => {
         await ProductSale.destroy({ where: { sale_id: id } });
         return Sale.destroy({ where: { sale_id: id } });
+    },
+    findBySellerId: async (sellerId) => {
+        if (!sellerId || isNaN(sellerId)) {
+            throw new Error(`Invalid sellerId: ${sellerId}`);
+        }
+
+        return Sale.findAll({
+            where: { seller_id: sellerId },
+            include: [ProductSale],
+        });
     }
 };
 

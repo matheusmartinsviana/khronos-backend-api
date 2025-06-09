@@ -1,0 +1,15 @@
+meta {
+  name: Get Current User Sales
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8000/api/v1/sales/getSales
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsInJvbGUiOiJzYWxlc3BlcnNvbiIsImlhdCI6MTc0OTQzNDU4NywiZXhwIjoxNzQ5NDM4MTg3fQ.GzfxFYsB8UlHmoEMJJzmrduPEJWb_xVkE-336u_UArk
+}

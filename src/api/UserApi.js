@@ -135,6 +135,19 @@ class UserApi {
       return res.status(400).send({ error: e.message });
     }
   }
+  async getSalespersonById(req, res) {
+    const { id } = req.params;
+
+    try {
+      if (!id) {
+        return res.status(400).send({ error: "Id is required" });
+      }
+      const user = await UserController.findSalespersonById(id);
+      return res.status(200).send(user);
+    } catch (e) {
+      return res.status(400).send({ error: `Error to get user: ${e.message}` });
+    }
+  }
 
 }
 

@@ -51,6 +51,28 @@ const SaleService = {
     deleteSale: async (id) => {
         await SaleService.getSaleById(id);
         return await SaleRepository.delete(id);
+    },
+    getSalesByCurrentUserId: async (userId) => {
+
+        if (!userId || isNaN(userId)) {
+            throw new Error(`ID do usuário inválido: ${userId}`);
+        }
+
+        const salesperson = await Salesperson.findOne({ where: { user_id: userId } });
+
+        if (!salesperson) {
+            throw new Error(`Vendedor não encontrado para user_id: ${userId}`);
+        }
+
+        console.log(`Vendedor encontrado: ${salesperson}`);
+
+        const sales = await SaleRepository.findBySellerId(salesperson.seller_id);
+
+        if (!sales || sales.length === 0) {
+            throw new Error("Nenhuma venda encontrada para este vendedor");
+        }
+
+        return sales;
     }
 };
 
