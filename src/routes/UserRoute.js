@@ -14,7 +14,7 @@ router.delete("/:id", authMiddleware(["admin"]), UserApi.deleteUser);
 router.patch("/block/:id", authMiddleware(["admin"]), UserApi.blockUser);
 router.patch("/unlock/:id", authMiddleware(["admin"]), UserApi.unlockUser);
 router.post("/admin", authMiddleware(["admin"]), UserApi.createAdmin);
-router.post("/salesperson", authMiddleware(), UserApi.createSalesperson);
-router.get("/salesperson/:id", authMiddleware(), UserApi.getSalespersonById);
+router.post("/salesperson", authMiddleware(["admin"]), UserApi.createSalesperson);
+router.get("/salesperson/:id", authMiddleware(["admin"]), UserApi.getSalespersonById);
 
 module.exports = router;

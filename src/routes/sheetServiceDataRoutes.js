@@ -3,10 +3,10 @@ const router = express.Router();
 const authMiddleware = require("../middlewares/auth");
 const controller = require("../controllers/sheetServiceDataController");
 
-router.get("/getData", authMiddleware(), controller.getData);
-router.get("/getRows", authMiddleware(), controller.getRows);
-router.post("/addRow", authMiddleware(), controller.addRow);
-router.post("/updateValue", authMiddleware(), controller.updateValue);
-router.post("/import-services", authMiddleware(), controller.importServiceController);
+router.get("/getData", authMiddleware(["admin"]), controller.getData);
+router.get("/getRows", authMiddleware(["admin"]), controller.getRows);
+router.post("/addRow", authMiddleware(["admin"]), controller.addRow);
+router.post("/updateValue", authMiddleware(["admin"]), controller.updateValue);
+router.post("/import-services", authMiddleware(["admin"]), controller.importServiceController);
 
 module.exports = router;
