@@ -64,7 +64,7 @@ const SaleService = {
             throw new Error(`Vendedor não encontrado para user_id: ${userId}`);
         }
 
-        console.log(`Vendedor encontrado: ${salesperson}`);
+        // console.log(`Vendedor encontrado: ${salesperson}`);
 
         const sales = await SaleRepository.findBySellerId(salesperson.seller_id);
 

@@ -15,6 +15,6 @@ router.patch("/block/:id", authMiddleware(["admin"]), UserApi.blockUser);
 router.patch("/unlock/:id", authMiddleware(["admin"]), UserApi.unlockUser);
 router.post("/admin", authMiddleware(["admin"]), UserApi.createAdmin);
 router.post("/salesperson", authMiddleware(["admin"]), UserApi.createSalesperson);
-router.get("/salesperson/:id", authMiddleware(["admin"]), UserApi.getSalespersonById);
+router.get("/salesperson/:id", authMiddleware(["salesperson", "admin"]), UserApi.getSalespersonById);
 
 module.exports = router;
