@@ -1,5 +1,8 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/Database");
+const SalespersonModel = require("./SalespersonModel");
+const CustomerModel = require("./CustomerModel");
+const ProductSale = require("./ProductSaleModel");
 
 const Sale = database.define("Sale", {
     sale_id: {
@@ -15,11 +18,19 @@ const Sale = database.define("Sale", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    payment_method: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     date: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
     },
 });
+
+Sale.belongsTo(SalespersonModel, { foreignKey: "seller_id" });
+Sale.belongsTo(CustomerModel, { foreignKey: "customer_id" });
+Sale.hasMany(ProductSale, { foreignKey: "sale_id" });
 
 module.exports = Sale;
