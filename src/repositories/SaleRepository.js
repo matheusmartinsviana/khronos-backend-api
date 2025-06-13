@@ -15,21 +15,27 @@ const SaleRepository = {
         include: [
             {
                 model: ProductSale,
-                attributes: ['product_sale_id', 'product_price', 'total_sales'],
+                attributes: ['product_sale_id', 'product_price', 'total_sales', 'quantity', 'zoning'],
                 include: [
                     {
                         model: ProductModel,
-                        attributes: ['product_id', 'name', 'price'],
+                        attributes: ['product_id', 'name', 'price', 'description', 'image'],
                     }
                 ]
             },
             {
                 model: SalespersonModel,
                 attributes: ['seller_id', 'user_id'],
+                include: [
+                    {
+                        model: UserModel,
+                        attributes: ['user_id', 'name', 'email'],
+                    }
+                ]
             },
             {
                 model: CustomerModel,
-                attributes: ['customer_id', 'name', 'email'],
+                attributes: ['customer_id', 'name', 'email', 'contact', 'adress'],
             }
         ]
     }),
@@ -46,11 +52,11 @@ const SaleRepository = {
         include: [
             {
                 model: ProductSale,
-                attributes: ['product_sale_id', 'product_price', 'total_sales'],
+                attributes: ['product_sale_id', 'product_price', 'total_sales', 'quantity', 'zoning'],
                 include: [
                     {
                         model: ProductModel,
-                        attributes: ['product_id', 'name', 'price'],
+                        attributes: ['product_id', 'name', 'price', 'description', 'image'],
                     }
                 ]
             },
@@ -60,13 +66,13 @@ const SaleRepository = {
                 include: [
                     {
                         model: UserModel,
-                        attributes: ['user_id', 'name'],
+                        attributes: ['user_id', 'name', 'email'],
                     }
                 ]
             },
             {
                 model: CustomerModel,
-                attributes: ['customer_id', 'name', 'email'],
+                attributes: ['customer_id', 'name', 'email', 'contact', 'adress'],
             }
         ]
     }),
@@ -82,11 +88,11 @@ const SaleRepository = {
             include: [
                 {
                     model: ProductSale,
-                    attributes: ['product_sale_id', 'product_price', 'total_sales'],
+                    attributes: ['product_sale_id', 'product_price', 'total_sales', 'quantity', 'zoning'],
                     include: [
                         {
                             model: ProductModel,
-                            attributes: ['product_id', 'name', 'price'],
+                            attributes: ['product_id', 'name', 'price', 'description', 'image'],
                         }
                     ]
                 },
@@ -96,13 +102,13 @@ const SaleRepository = {
                     include: [
                         {
                             model: UserModel,
-                            attributes: ['email'],
+                            attributes: ['user_id', 'name', 'email'],
                         }
                     ]
                 },
                 {
                     model: CustomerModel,
-                    attributes: ['customer_id', 'name', 'email'],
+                    attributes: ['customer_id', 'name', 'email', 'contact', 'adress'],
                 }
             ],
         });

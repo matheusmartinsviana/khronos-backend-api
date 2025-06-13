@@ -27,6 +27,10 @@ const Sale = database.define("Sale", {
         allowNull: false,
         defaultValue: DataTypes.NOW,
     },
+    observation: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 });
 
 Sale.belongsTo(SalespersonModel, { foreignKey: "seller_id" });

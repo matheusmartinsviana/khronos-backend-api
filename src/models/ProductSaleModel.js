@@ -16,6 +16,10 @@ const ProductSale = database.define("ProductSales", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   zoning: {
     type: DataTypes.STRING,
   },

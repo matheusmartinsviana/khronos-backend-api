@@ -3,7 +3,9 @@ const user = require("../models/UserModel");
 const { hashPassword, comparePassword } = require("../utils/hash");
 const { generateToken } = require("../utils/jwt");
 const AppError = require("../errors/AppError");
-const Salesperson = require("../models/SalespersonModel");
+const UserModel = require("../models/UserModel");
+const SalespersonRepository = require("../repositories/SalespersonRepository");
+const SalespersonModel = require("../models/SalespersonModel");
 
 class UserService {
     async create(name, email, password, role, category_id) {
@@ -137,10 +139,14 @@ class UserService {
     async findSalespersonById(id) {
         if (!id) throw new AppError("Id is required", 400);
 
-        const found = await Salesperson.findOne({ where: { user_id: id } });
+        const found = await SalespersonModel.findOne({ where: { user_id: id } });
         if (!found) throw new AppError("Salesperson not found", 404);
 
         return found;
+    }
+
+    async findSalespersons() {
+        return await SalespersonRepository.findAll();
     }
 
 }

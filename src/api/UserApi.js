@@ -148,6 +148,14 @@ class UserApi {
       return res.status(400).send({ error: `Error to get user: ${e.message}` });
     }
   }
+  async getSalespersons(req, res) {
+    try {
+      const users = await UserController.findSalespersons();
+      return res.status(200).send(users);
+    } catch (e) {
+      return res.status(400).send({ error: `Error listing users: ${e.message}` });
+    }
+  }
 
 }
 

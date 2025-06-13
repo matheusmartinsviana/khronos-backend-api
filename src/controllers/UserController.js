@@ -57,6 +57,10 @@ class UserController {
     return UserService.findSalespersonById(id);
   }
 
+  async findSalespersons() {
+    return UserService.findSalespersons();
+  }
+
 }
 
 module.exports = new UserController();
