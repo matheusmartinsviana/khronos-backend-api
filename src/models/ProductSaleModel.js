@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/Database");
 const ProductModel = require("./ProductModel");
+const ServiceModel = require("./ServiceModel");
 
 const ProductSale = database.define("ProductSales", {
   product_sale_id: {
@@ -26,5 +27,6 @@ const ProductSale = database.define("ProductSales", {
 });
 
 ProductSale.belongsTo(ProductModel, { foreignKey: "product_id" });
+ProductSale.belongsTo(ServiceModel, { foreignKey: "service_id" });
 
 module.exports = ProductSale;

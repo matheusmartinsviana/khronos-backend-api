@@ -4,6 +4,7 @@ const SalespersonModel = require("../models/SalespersonModel");
 const CustomerModel = require("../models/CustomerModel");
 const ProductModel = require("../models/ProductModel");
 const UserModel = require("../models/UserModel");
+const ServiceModel = require("../models/ServiceModel");
 
 const SaleRepository = {
     create: async (data) => await Sale.create(data),
@@ -20,6 +21,10 @@ const SaleRepository = {
                     {
                         model: ProductModel,
                         attributes: ['product_id', 'name', 'price', 'description', 'image'],
+                    },
+                    {
+                        model: ServiceModel,
+                        attributes: ['service_id', 'name', 'price', 'description'],
                     }
                 ]
             },
@@ -57,6 +62,10 @@ const SaleRepository = {
                     {
                         model: ProductModel,
                         attributes: ['product_id', 'name', 'price', 'description', 'image'],
+                    },
+                    {
+                        model: ServiceModel,
+                        attributes: ['service_id', 'name', 'price', 'description'],
                     }
                 ]
             },
@@ -93,6 +102,10 @@ const SaleRepository = {
                         {
                             model: ProductModel,
                             attributes: ['product_id', 'name', 'price', 'description', 'image'],
+                        },
+                        {
+                            model: ServiceModel,
+                            attributes: ['service_id', 'name', 'price', 'description'],
                         }
                     ]
                 },

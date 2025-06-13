@@ -1,5 +1,6 @@
 const SaleRepository = require("../repositories/SaleRepository");
 const Product = require("../models/ProductModel");
+const Service = require("../models/ServiceModel");
 const Salesperson = require("../models/SalespersonModel");
 const Customer = require("../models/CustomerModel");
 
@@ -14,11 +15,37 @@ const SaleService = {
         if (!customer) throw new Error("Cliente não encontrado");
 
         if (products && products.length > 0) {
-            const productIds = products.map(p => p.product_id);
-            const existingProducts = await Product.findAll({ where: { product_id: productIds } });
+            const productIds = products
+                .filter(p => p.product_id)
+                .map(p => p.product_id);
 
-            if (existingProducts.length !== productIds.length) {
-                throw new Error("Um ou mais produtos são inválidos");
+            const serviceIds = products
+                .filter(p => p.service_id)
+                .map(p => p.service_id);
+
+            let foundProductIds = [];
+            let foundServiceIds = [];
+
+            if (productIds.length > 0) {
+                const existingProducts = await Product.findAll({
+                    where: { product_id: productIds }
+                });
+                foundProductIds = existingProducts.map(p => p.product_id);
+            }
+
+            if (serviceIds.length > 0) {
+                const existingServices = await Service.findAll({
+                    where: { service_id: serviceIds }
+                });
+                foundServiceIds = existingServices.map(s => s.service_id);
+            }
+
+            // Check for missing products/services
+            const missingProductIds = productIds.filter(id => !foundProductIds.includes(id));
+            const missingServiceIds = serviceIds.filter(id => !foundServiceIds.includes(id));
+
+            if (missingProductIds.length > 0 || missingServiceIds.length > 0) {
+                throw new Error("Um ou mais produtos/serviços são inválidos");
             }
         }
 
@@ -63,8 +90,6 @@ const SaleService = {
         if (!salesperson) {
             throw new Error(`Vendedor não encontrado para user_id: ${userId}`);
         }
-
-        // console.log(`Vendedor encontrado: ${salesperson}`);
 
         const sales = await SaleRepository.findBySellerId(salesperson.seller_id);
 

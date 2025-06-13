@@ -3,7 +3,7 @@ const database = require("../config/Database");
 const Category = require("./CategoryModel");
 
 const ServiceModel = database.define("Service", {
-  product_id: {
+  service_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,

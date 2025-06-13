@@ -24,7 +24,7 @@ class UserService {
                 //     throw new AppError("Category ID is required for salesperson role.", 400);
                 // }
 
-                const resp = await Salesperson.create({ user_id: createdUser.user_id, category_id: category_id || 1 });
+                const resp = await SalespersonModel.create({ user_id: createdUser.user_id, category_id: category_id || 1 });
                 console.log("Salesperson created with ID:", resp.salesperson_id);
             } else if (role !== "admin" && role !== "viewer") {
                 throw new AppError("Invalid role. Allowed roles are 'admin', 'viewer', or 'salesperson'.", 400);
