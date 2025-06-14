@@ -19,7 +19,7 @@ class UserService {
             console.log("Creating user with role:", role);
             const createdUser = await user.create({ name, email, password: hashed, role });
 
-            if (role === "salesperson") {
+            if (role === "salesperson" || role === "admin") {
                 // if (!category_id) {
                 //     throw new AppError("Category ID is required for salesperson role.", 400);
                 // }
@@ -147,6 +147,18 @@ class UserService {
 
     async findSalespersons() {
         return await SalespersonRepository.findAll();
+    }
+
+    async updateUserInfo(id, name, email, role) {
+
+        const userValue = await this.findUser(id);
+        userValue.name = name || userValue.name;
+        userValue.email = email || userValue.email;
+        userValue.role = role || userValue.role;
+
+        await userValue.save();
+
+        return userValue;
     }
 
 }

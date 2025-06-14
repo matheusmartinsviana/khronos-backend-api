@@ -37,6 +37,20 @@ class UserApi {
     }
   }
 
+  async updateUserInfo(req, res) {
+    const id = req.params.id || req.user.id;
+    const { name, email, role } = req.body;
+
+    try {
+      const user = await UserController.updateUserInfo(id, name, email, role);
+      return res.status(200).send(user);
+    } catch (e) {
+      return res
+        .status(400)
+        .send({ error: `Error updating user info: ${e.message}` });
+    }
+  }
+
   async deleteUser(req, res) {
     try {
       const id = req.params.id || req.user.user_id;

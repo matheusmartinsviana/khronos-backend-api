@@ -133,6 +133,13 @@ class ProductRepository {
             ],
         })
     }
+
+    async searchTopProducts() {
+        return await this.ProductModel.findAll({
+            order: [["sales_count", "DESC"]],
+            limit: 10,
+        })
+    }
 }
 
 module.exports = ProductRepository

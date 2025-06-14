@@ -333,6 +333,15 @@ class ProductApi {
     uploadSingle() {
         return upload.single("image")
     }
+
+    async searchTopProducts(req, res) {
+        try {
+            const products = await ProductController.searchTopProducts()
+            return res.status(200).send(products)
+        } catch (e) {
+            return res.status(400).send({ error: `Error searching top products: ${e.message}` })
+        }
+    }
 }
 
 module.exports = new ProductApi()

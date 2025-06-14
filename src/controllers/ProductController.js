@@ -100,6 +100,14 @@ class ProductController {
     async deleteAll() {
         return ProductService.deleteAll()
     }
+
+    async searchTopProducts() {
+        try {
+            return ProductService.searchTopProducts()
+        } catch (e) {
+            throw new AppError(`Error searching top products: ${e.message}`, 400)
+        }
+    }
 }
 
 module.exports = new ProductController()

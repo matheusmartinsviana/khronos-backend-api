@@ -40,6 +40,12 @@ const ServiceModel = database.define("Service", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  sales_count: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+    comment: "Number of times the service has been sold",
+  },
 });
 
 

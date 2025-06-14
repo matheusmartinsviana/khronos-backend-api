@@ -7,6 +7,7 @@ const authMiddleware = require("../middlewares/auth");
 router.put("/", authMiddleware(), UserApi.updateUser);
 router.get("/info", authMiddleware(), UserApi.getCurrentUserInfo);
 router.delete("/", authMiddleware(), UserApi.deleteUser);
+router.patch("/info/:id", authMiddleware(), UserApi.updateUserInfo);
 
 // Rotas específicas - devem vir antes das rotas com :id
 router.get("/salesperson", authMiddleware(["admin"]), UserApi.getSalespersons);

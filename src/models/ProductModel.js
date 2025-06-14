@@ -49,6 +49,12 @@ const ProductModel = database.define("Product", {
     allowNull: true,
     comment: "Cloudinary public ID for image management",
   },
+  sales_count: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+    comment: "Number of times the product has been sold",
+  },
 })
 
 module.exports = ProductModel

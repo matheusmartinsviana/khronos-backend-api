@@ -61,6 +61,16 @@ class UserController {
     return UserService.findSalespersons();
   }
 
+  async updateUserInfo(id, name, email, role) {
+    if (!id) {
+      throw new AppError("Id is required", 400);
+    }
+    if (!name && !email && !role) {
+      throw new AppError("User was not updated: provide at least one of name, email, or role.", 400);
+    }
+    return UserService.updateUserInfo(id, name, email, role);
+  }
+
 }
 
 module.exports = new UserController();

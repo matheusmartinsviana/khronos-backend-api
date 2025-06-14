@@ -7,9 +7,9 @@ const ServiceRepository = {
 
     findById: (id) => ServiceModel.findByPk(id),
 
-    update: (id, data) => ServiceModel.update(data, { where: { product_id: id } }),
+    update: (id, data) => ServiceModel.update(data, { where: { service_id: id } }),
 
-    delete: (id) => ServiceModel.destroy({ where: { product_id: id } }),
+    delete: (id) => ServiceModel.destroy({ where: { service_id: id } }),
 };
 
 module.exports = ServiceRepository;

@@ -10,6 +10,7 @@ router.get("/:id/image-variations", ProductApi.getImageVariations)
 router.get("/type/:type", ProductApi.findProductsByType)
 router.get("/segment/:segment", ProductApi.findProductsBySegment)
 router.get("/price-range", ProductApi.findProductsByPriceRange)
+router.get("/search/top", ProductApi.searchTopProducts)
 
 router.post("/", authMiddleware(), ProductApi.uploadSingle(), ProductApi.createProduct)
 router.put("/:id", authMiddleware(), ProductApi.uploadSingle(), ProductApi.updateProduct)

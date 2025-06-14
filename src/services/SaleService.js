@@ -3,6 +3,7 @@ const Product = require("../models/ProductModel");
 const Service = require("../models/ServiceModel");
 const Salesperson = require("../models/SalespersonModel");
 const Customer = require("../models/CustomerModel");
+const UserModel = require("../models/UserModel");
 
 const SaleService = {
     createSale: async (data) => {
@@ -85,16 +86,27 @@ const SaleService = {
             throw new Error(`ID do usuário inválido: ${userId}`);
         }
 
-        const salesperson = await Salesperson.findOne({ where: { user_id: userId } });
+        let salesperson = await Salesperson.findOne({ where: { user_id: userId } });
 
         if (!salesperson) {
-            throw new Error(`Vendedor não encontrado para user_id: ${userId}`);
+            const user = await UserModel.findByPk(userId);
+            if (!user) {
+                throw new Error(`Usuário não encontrado para user_id: ${userId}`);
+            }
+            if (user.role === "admin" || user.role === "salesperson") {
+                // Cria um novo salesperson para o usuário
+                const newSalesperson = await Salesperson.create({ user_id: userId, name: user.name });
+                // Atualiza a referência para o novo salesperson
+                salesperson = newSalesperson;
+            } else {
+                throw new Error(`Vendedor não encontrado para user_id: ${userId}`);
+            }
         }
 
         const sales = await SaleRepository.findBySellerId(salesperson.seller_id);
 
         if (!sales || sales.length === 0) {
-            throw new Error("Nenhuma venda encontrada para este vendedor");
+            return [];
         }
 
         return sales;

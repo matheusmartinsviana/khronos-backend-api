@@ -205,6 +205,14 @@ class ProductService {
 
         return await this.productRepository.deleteAll()
     }
+
+    async searchTopProducts() {
+        try {
+            return await this.productRepository.searchTopProducts()
+        } catch (e) {
+            throw new AppError(`Error searching top products: ${e.message}`, 400)
+        }
+    }
 }
 
 module.exports = new ProductService()
