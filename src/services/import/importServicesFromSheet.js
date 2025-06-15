@@ -2,11 +2,8 @@ const sheetServiceService = require("../sheetServiceDataService");
 const ServiceRepository = require("../../repositories/ServiceSheetRepository");
 const ServiceModel = require("../../models/ServiceModel");
 
-const repository = new ServiceRepository(ServiceModel);
-
 async function importProductsFromSheet() {
   const { values } = await sheetServiceService.getRows();
-
   if (!values || values.length === 0) return;
 
   const headers = values[0];
@@ -23,7 +20,7 @@ async function importProductsFromSheet() {
 
       const priceStr = String(obj["VALOR"]).replace(/[^\d,.-]/g, '').replace(',', '.');
 
-      return { 
+      return {
         name: obj["DESCRIÇÃO"],
         code: obj["CÓDIGO"] || null,
         price: parseFloat(priceStr) || 0,
@@ -36,10 +33,23 @@ async function importProductsFromSheet() {
     })
     .filter(Boolean);
 
-  await repository.deleteAll();
+  const added = [];
 
-  const saved = await repository.bulkCreate(mapped);
-  return saved;
+  for (const item of mapped) {
+    // Verifica se já existe por código ou nome
+    const existing = await ServiceModel.findOne({
+      where: {
+        name: item.name
+      }
+    });
+
+    if (!existing) {
+      const created = await ServiceModel.create(item);
+      added.push(created);
+    }
+  }
+
+  return added;
 }
 
 module.exports = importProductsFromSheet;

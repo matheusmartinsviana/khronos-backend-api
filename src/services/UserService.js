@@ -8,23 +8,28 @@ const SalespersonRepository = require("../repositories/SalespersonRepository");
 const SalespersonModel = require("../models/SalespersonModel");
 
 class UserService {
-    async create(name, email, password, role, category_id) {
-        if (!name || !email || !password) {
-            throw new AppError("Name, email, and password are required.", 400);
-        }
-
+    async create(name, email, password, role, commission, category_id) {
         const hashed = await hashPassword(password, process.env.SALT_VALUE);
 
         try {
             console.log("Creating user with role:", role);
             const createdUser = await user.create({ name, email, password: hashed, role });
 
-            if (role === "salesperson" || role === "admin") {
-                // if (!category_id) {
-                //     throw new AppError("Category ID is required for salesperson role.", 400);
-                // }
+            let resp = null;
+            let commissionValue = null;
 
-                const resp = await SalespersonModel.create({ user_id: createdUser.user_id, category_id: category_id || 1 });
+            if (role === "salesperson") {
+                resp = await SalespersonModel.create({
+                    user_id: createdUser.user_id,
+                    category_id: category_id || 1,
+                    commission
+                });
+                commissionValue = resp.commission;
+
+                if (!resp) {
+                    throw new AppError("Failed to create salesperson record.", 500);
+                }
+
                 console.log("Salesperson created with ID:", resp.salesperson_id);
             } else if (role !== "admin" && role !== "viewer") {
                 throw new AppError("Invalid role. Allowed roles are 'admin', 'viewer', or 'salesperson'.", 400);
@@ -36,6 +41,7 @@ class UserService {
                 name: createdUser.name,
                 email: createdUser.email,
                 role: createdUser.role,
+                commission: commissionValue
             };
 
         } catch (error) {
@@ -149,12 +155,24 @@ class UserService {
         return await SalespersonRepository.findAll();
     }
 
-    async updateUserInfo(id, name, email, role) {
+    async updateUserInfo(id, name, email, role, commission) {
+        if (!id) throw new AppError("Id is required", 400);
 
         const userValue = await this.findUser(id);
-        userValue.name = name || userValue.name;
-        userValue.email = email || userValue.email;
-        userValue.role = role || userValue.role;
+
+        if (name) userValue.name = name;
+        if (email) userValue.email = email;
+        if (role) userValue.role = role;
+
+        let salesperson = null;
+        if (commission !== undefined && commission !== null) {
+            salesperson = await SalespersonModel.findOne({ where: { user_id: id } });
+            if (!salesperson) {
+                throw new AppError("Salesperson not found for the given user ID", 404);
+            }
+            salesperson.commission = commission;
+            await salesperson.save();
+        }
 
         await userValue.save();
 

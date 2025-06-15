@@ -15,6 +15,10 @@ const SalespersonModel = database.define(
       type: DataTypes.DOUBLE,
       defaultValue: 0,
     },
+    commission: {
+      type: DataTypes.FLOAT,
+      defaultValue: 0,
+    },
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,

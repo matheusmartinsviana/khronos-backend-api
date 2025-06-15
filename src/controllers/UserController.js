@@ -2,11 +2,11 @@ const AppError = require("../errors/AppError");
 const UserService = require("../services/UserService");
 
 class UserController {
-  async create(name, email, password, role) {
+  async create(name, email, password, role, commission) {
     if (!name || !email || !password) {
       throw new AppError("Name, email, and password are required.", 400);
     }
-    return UserService.create(name, email, password, role);
+    return UserService.create(name, email, password, role, commission || null);
   }
 
   async findUser(id) {
@@ -61,14 +61,14 @@ class UserController {
     return UserService.findSalespersons();
   }
 
-  async updateUserInfo(id, name, email, role) {
+  async updateUserInfo(id, name, email, role, commission) {
     if (!id) {
       throw new AppError("Id is required", 400);
     }
     if (!name && !email && !role) {
       throw new AppError("User was not updated: provide at least one of name, email, or role.", 400);
     }
-    return UserService.updateUserInfo(id, name, email, role);
+    return UserService.updateUserInfo(id, name, email, role, commission);
   }
 
 }

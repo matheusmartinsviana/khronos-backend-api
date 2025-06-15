@@ -39,10 +39,10 @@ class UserApi {
 
   async updateUserInfo(req, res) {
     const id = req.params.id || req.user.id;
-    const { name, email, role } = req.body;
+    const { name, email, role, commission } = req.body;
 
     try {
-      const user = await UserController.updateUserInfo(id, name, email, role);
+      const user = await UserController.updateUserInfo(id, name, email, role, commission || null);
       return res.status(200).send(user);
     } catch (e) {
       return res
@@ -140,10 +140,10 @@ class UserApi {
   }
 
   async createSalesperson(req, res) {
-    const { name, email, password } = req.body;
+    const { name, email, password, commission } = req.body;
     const role = "salesperson";
     try {
-      const user = await UserController.create(name, email, password, role);
+      const user = await UserController.create(name, email, password, role, commission);
       return res.status(201).send(user);
     } catch (e) {
       return res.status(400).send({ error: e.message });

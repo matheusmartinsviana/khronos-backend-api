@@ -1,8 +1,5 @@
 const sheetProductService = require("../sheetProductDataService");
-const ProductRepository = require("../../repositories/ProductRepository");
 const ProductModel = require("../../models/ProductModel");
-
-const repository = new ProductRepository(ProductModel);
 
 async function importProductsFromSheet() {
   const { values } = await sheetProductService.getRows();
@@ -11,7 +8,7 @@ async function importProductsFromSheet() {
 
   const headers = values[0];
   const rows = values.slice(1);
- 
+
   const mapped = rows
     .map((row) => {
       const obj = {};
@@ -29,12 +26,23 @@ async function importProductsFromSheet() {
         description: obj["OBS"] || null,
       };
     })
-    .filter(Boolean); 
+    .filter(Boolean);
 
-  await repository.deleteAll();
+  const added = [];
 
-  const saved = await repository.bulkCreate(mapped);
-  return saved;
+  for (const item of mapped) {
+    const exists = await ProductModel.findOne({
+      where: { name: item.name }
+    });
+
+    if (!exists) {
+      const created = await ProductModel.create(item);
+      added.push(created);
+    }
+  }
+
+  return added;
 }
+
 
 module.exports = importProductsFromSheet;
