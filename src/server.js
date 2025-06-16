@@ -11,6 +11,7 @@ const serviceRouter = require("./routes/ServicesRoute");
 const productRouter = require("./routes/ProductRoutes");
 const categoryRouter = require("./routes/CategoryRoutes");
 const authRoutes = require("./routes/AuthRoutes");
+const emailRoutes = require("./routes/emailRoutes");
 
 require("./models/associations");
 
@@ -29,6 +30,7 @@ app.use("/api/v1/customer", customerRouter);
 app.use("/api/v1/service", serviceRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/category", categoryRouter);
+app.use('/api/v1/email', emailRoutes);
 
 app.get("/", (_, res) => {
   res.send({ message: `Hello world!` });
