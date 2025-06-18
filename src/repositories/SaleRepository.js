@@ -5,11 +5,19 @@ const CustomerModel = require("../models/CustomerModel");
 const ProductModel = require("../models/ProductModel");
 const UserModel = require("../models/UserModel");
 const ServiceModel = require("../models/ServiceModel");
+const ServiceSale = require("../models/ServiceSaleModel");
 
 const SaleRepository = {
     create: async (data) => await Sale.create(data),
 
-    createProductSales: async (productSales) => await ProductSale.bulkCreate(productSales),
+    createProductSales: async (productSales) => {
+        return await ProductSale.bulkCreate(productSales);
+    },
+
+    createServiceSales: async (serviceSales) => {
+        return await ServiceSale.bulkCreate(serviceSales);
+    },
+
 
     findAll: () => Sale.findAll({
         attributes: ['sale_id', 'amount', 'sale_type', 'date', 'payment_method'],
@@ -22,6 +30,12 @@ const SaleRepository = {
                         model: ProductModel,
                         attributes: ['product_id', 'name', 'price', 'description', 'image'],
                     },
+                ]
+            },
+            {
+                model: ServiceSale,
+                attributes: ['service_sale_id', 'service_price', 'total_sales', 'quantity', 'zoning'],
+                include: [
                     {
                         model: ServiceModel,
                         attributes: ['service_id', 'name', 'price', 'description'],
@@ -63,6 +77,12 @@ const SaleRepository = {
                         model: ProductModel,
                         attributes: ['product_id', 'name', 'price', 'description', 'image'],
                     },
+                ]
+            },
+            {
+                model: ServiceSale,
+                attributes: ['service_sale_id', 'service_price', 'total_sales', 'quantity', 'zoning'],
+                include: [
                     {
                         model: ServiceModel,
                         attributes: ['service_id', 'name', 'price', 'description'],
@@ -103,6 +123,12 @@ const SaleRepository = {
                             model: ProductModel,
                             attributes: ['product_id', 'name', 'price', 'description', 'image'],
                         },
+                    ]
+                },
+                {
+                    model: ServiceSale,
+                    attributes: ['service_sale_id', 'service_price', 'total_sales', 'quantity', 'zoning'],
+                    include: [
                         {
                             model: ServiceModel,
                             attributes: ['service_id', 'name', 'price', 'description'],

@@ -4,7 +4,7 @@ const ServiceRepository = require("../repositories/ServiceRepository");
 class ServiceService {
     async create(data) {
         const { name, price, product_type } = data;
-        if (!name || !price || !product_type) {
+        if (!name || price === undefined || price === null || !product_type) {
             throw new AppError("Name, price and product_type are required", 400);
         }
         return await ServiceRepository.create(data);

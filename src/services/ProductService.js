@@ -10,7 +10,7 @@ class ProductService {
     }
 
     async create(name, code, price, description, zoning, product_type, observation, segment, image, image_public_id) {
-        if (!name || !price || !product_type) {
+        if (!name || product_type == null || price === undefined || price === null) {
             throw new AppError("Name, price, and product_type are required.", 400)
         }
 
@@ -19,7 +19,6 @@ class ProductService {
         }
 
         try {
-            // Verificar se já existe um produto com o mesmo código (se fornecido)
             if (code) {
                 const existingProduct = await this.productRepository.findByCode(code)
                 if (existingProduct) {

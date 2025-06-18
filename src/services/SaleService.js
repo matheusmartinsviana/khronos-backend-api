@@ -7,57 +7,83 @@ const UserModel = require("../models/UserModel");
 
 const SaleService = {
     createSale: async (data) => {
-        const { seller_id, customer_id, products, ...saleData } = data;
+        const {
+            seller_id,
+            customer_id,
+            produtos,
+            servicos,
+            ...saleData
+        } = data;
 
+        // Verificação de vendedor
         const seller = await Salesperson.findByPk(seller_id);
         if (!seller) throw new Error("Vendedor não encontrado");
 
+        // Verificação de cliente
         const customer = await Customer.findByPk(customer_id);
         if (!customer) throw new Error("Cliente não encontrado");
 
-        if (products && products.length > 0) {
-            const productIds = products
-                .filter(p => p.product_id)
-                .map(p => p.product_id);
+        // Verificação dos produtos (se existirem)
+        if (produtos && produtos.length > 0) {
+            const productIds = produtos.map(p => p.product_id);
+            const existingProducts = await Product.findAll({
+                where: { product_id: productIds }
+            });
 
-            const serviceIds = products
-                .filter(p => p.service_id)
-                .map(p => p.service_id);
-
-            let foundProductIds = [];
-            let foundServiceIds = [];
-
-            if (productIds.length > 0) {
-                const existingProducts = await Product.findAll({
-                    where: { product_id: productIds }
-                });
-                foundProductIds = existingProducts.map(p => p.product_id);
-            }
-
-            if (serviceIds.length > 0) {
-                const existingServices = await Service.findAll({
-                    where: { service_id: serviceIds }
-                });
-                foundServiceIds = existingServices.map(s => s.service_id);
-            }
-
-            // Check for missing products/services
+            const foundProductIds = existingProducts.map(p => p.product_id);
             const missingProductIds = productIds.filter(id => !foundProductIds.includes(id));
-            const missingServiceIds = serviceIds.filter(id => !foundServiceIds.includes(id));
-
-            if (missingProductIds.length > 0 || missingServiceIds.length > 0) {
-                throw new Error("Um ou mais produtos/serviços são inválidos");
+            if (missingProductIds.length > 0) {
+                throw new Error("Um ou mais produtos são inválidos");
             }
         }
 
-        const sale = await SaleRepository.create({ ...saleData, seller_id, customer_id });
+        // Verificação dos serviços (se existirem)
+        if (servicos && servicos.length > 0) {
+            const serviceIds = servicos.map(s => s.service_id);
+            const existingServices = await Service.findAll({
+                where: { service_id: serviceIds }
+            });
 
-        if (products && products.length > 0) {
-            const productSales = products.map(p => ({
-                ...p,
-                sale_id: sale.sale_id
+            const foundServiceIds = existingServices.map(s => s.service_id);
+            const missingServiceIds = serviceIds.filter(id => !foundServiceIds.includes(id));
+            if (missingServiceIds.length > 0) {
+                throw new Error("Um ou mais serviços são inválidos");
+            }
+        }
+
+        // Criação da venda
+        const sale = await SaleRepository.create({
+            ...saleData,
+            seller_id,
+            customer_id,
+        });
+
+        // Criação dos registros em ProductSale
+        if (produtos && produtos.length > 0) {
+            const productSales = produtos.map(p => ({
+                product_id: p.product_id,
+                sale_id: sale.sale_id,
+                quantity: p.quantidade || 1,
+                price: Number(p.price?.toFixed(2)) || 0,
+                product_price: Number(p.price?.toFixed(2)) || 0,
+                total_sales: Number((p.price * (p.quantidade || 1)).toFixed(2)),
+                zoneamento: p.zoneamento || "",
             }));
             await SaleRepository.createProductSales(productSales);
+        }
+
+        // Criação dos registros em ServiceSale
+        if (servicos && servicos.length > 0) {
+            const serviceSales = servicos.map(s => ({
+                service_id: s.service_id,
+                sale_id: sale.sale_id,
+                quantity: s.quantidade || 1,
+                price: Number(s.price?.toFixed(2)) || 0,
+                service_price: Number(s.price?.toFixed(2)) || 0,
+                total_sales: Number((s.price * (s.quantidade || 1)).toFixed(2)),
+                zoneamento: s.zoneamento || "",
+            }));
+            await SaleRepository.createServiceSales(serviceSales);
         }
 
         return sale;
