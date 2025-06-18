@@ -26,7 +26,4 @@ const ProductSale = database.define("ProductSales", {
   },
 });
 
-ProductSale.belongsTo(ProductModel, { foreignKey: "product_id" });
-ProductSale.belongsTo(ServiceModel, { foreignKey: "service_id" });
-
 module.exports = ProductSale;

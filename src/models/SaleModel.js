@@ -33,8 +33,4 @@ const Sale = database.define("Sale", {
     },
 });
 
-Sale.belongsTo(SalespersonModel, { foreignKey: "seller_id" });
-Sale.belongsTo(CustomerModel, { foreignKey: "customer_id" });
-Sale.hasMany(ProductSale, { foreignKey: "sale_id" });
-
 module.exports = Sale;

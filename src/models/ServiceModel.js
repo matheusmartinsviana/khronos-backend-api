@@ -28,9 +28,9 @@ const ServiceModel = database.define("Service", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  product_type: {
+  service_type: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: true,
   },
   observation: {
     type: DataTypes.TEXT,
