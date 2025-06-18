@@ -1,83 +1,60 @@
+const sequelize = require("../config/Database");
+
+const User = require("./UserModel");
+const Salesperson = require("./SalespersonModel");
+const Category = require("./CategoryModel");
+const Customer = require("./CustomerModel");
+const Product = require("./ProductModel");
+const Service = require("./ServiceModel");
 const Sale = require("./SaleModel");
 const ProductSale = require("./ProductSaleModel");
-const Product = require("./ProductModel");
-const CategoryModel = require("./CategoryModel");
-const SalespersonModel = require("./SalespersonModel");
-const CustomerModel = require("./CustomerModel");
-const UserModel = require("./UserModel");
-const ServiceModel = require("./ServiceModel");
+const ServiceSale = require("./ServiceSaleModel");
 
-// ProductSale ↔ Product
-ProductSale.belongsTo(Product, {
-    foreignKey: "product_id",
-    onDelete: "CASCADE"
-});
-Product.hasMany(ProductSale, {
-    foreignKey: "product_id",
-    onDelete: "CASCADE"
-});
+// USER ↔ SALESPERSON (1:1)
+User.hasOne(Salesperson, { foreignKey: "user_id", onDelete: "CASCADE" });
+Salesperson.belongsTo(User, { foreignKey: "user_id" });
 
-// ProductSale ↔ Service
-ProductSale.belongsTo(ServiceModel, {
-    foreignKey: "service_id",
-    onDelete: "CASCADE"
-});
-ServiceModel.hasMany(ProductSale, {
-    foreignKey: "service_id",
-    onDelete: "CASCADE"
-});
+// CATEGORY ↔ SALESPERSON (1:N)
+Category.hasMany(Salesperson, { foreignKey: "category_id" });
+Salesperson.belongsTo(Category, { foreignKey: "category_id", onDelete: "SET NULL" });
 
-// ProductSale ↔ Sale
-ProductSale.belongsTo(Sale, {
-    foreignKey: "sale_id",
-    onDelete: "CASCADE"
-});
-Sale.hasMany(ProductSale, {
-    foreignKey: "sale_id",
-    onDelete: "CASCADE"
-});
+// CATEGORY ↔ PRODUCT (1:N)
+Category.hasMany(Product, { foreignKey: "category_id" });
+Product.belongsTo(Category, { foreignKey: "category_id", onDelete: "CASCADE" });
 
-// Sale ↔ Salesperson
-Sale.belongsTo(SalespersonModel, {
-    foreignKey: "seller_id",
-    onDelete: "SET NULL"
-});
-SalespersonModel.hasMany(Sale, {
-    foreignKey: "seller_id"
-});
+// CUSTOMER ↔ SALE (1:N)
+Customer.hasMany(Sale, { foreignKey: "customer_id" });
+Sale.belongsTo(Customer, { foreignKey: "customer_id", onDelete: "SET NULL" });
 
-// Sale ↔ Customer
-Sale.belongsTo(CustomerModel, {
-    foreignKey: "customer_id",
-    onDelete: "SET NULL"
-});
-CustomerModel.hasMany(Sale, {
-    foreignKey: "customer_id"
-});
+// SALESPERSON ↔ SALE (1:N)
+Salesperson.hasMany(Sale, { foreignKey: "seller_id" });
+Sale.belongsTo(Salesperson, { foreignKey: "seller_id", onDelete: "SET NULL" });
 
-// Product ↔ Category
-Product.belongsTo(CategoryModel, {
-    foreignKey: "category_id",
-    onDelete: "CASCADE"
-});
-CategoryModel.hasMany(Product, {
-    foreignKey: "category_id"
-});
+// SALE ↔ PRODUCT_SALE (1:N)
+Sale.hasMany(ProductSale, { foreignKey: "sale_id", onDelete: "CASCADE" });
+ProductSale.belongsTo(Sale, { foreignKey: "sale_id" });
 
-// Salesperson ↔ User
-SalespersonModel.belongsTo(UserModel, {
-    foreignKey: "user_id",
-    onDelete: "CASCADE"
-});
-UserModel.hasOne(SalespersonModel, {
-    foreignKey: "user_id"
-});
+// PRODUCT ↔ PRODUCT_SALE (1:N)
+Product.hasMany(ProductSale, { foreignKey: "product_id", onDelete: "CASCADE" });
+ProductSale.belongsTo(Product, { foreignKey: "product_id" });
 
-// Salesperson ↔ Category
-SalespersonModel.belongsTo(CategoryModel, {
-    foreignKey: "category_id",
-    onDelete: "SET NULL"
-});
-CategoryModel.hasMany(SalespersonModel, {
-    foreignKey: "category_id"
-});
+// SALE ↔ SERVICE_SALE (1:N)
+Sale.hasMany(ServiceSale, { foreignKey: "sale_id", onDelete: "CASCADE" });
+ServiceSale.belongsTo(Sale, { foreignKey: "sale_id" });
+
+// SERVICE ↔ SERVICE_SALE (1:N)
+Service.hasMany(ServiceSale, { foreignKey: "service_id", onDelete: "CASCADE" });
+ServiceSale.belongsTo(Service, { foreignKey: "service_id" });
+
+module.exports = {
+    sequelize,
+    User,
+    Salesperson,
+    Category,
+    Customer,
+    Product,
+    Service,
+    Sale,
+    ProductSale,
+    ServiceSale
+};
