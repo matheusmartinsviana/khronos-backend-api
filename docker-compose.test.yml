@@ -1,0 +1,17 @@
+version: "3"
+services:
+  postgres-test:
+    image: postgres:15
+    container_name: pg_test
+    restart: always
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+
+volumes:
+  pgdata_test:
