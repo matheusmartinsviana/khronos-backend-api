@@ -171,48 +171,6 @@ class ProductApi {
         }
     }
 
-    async findProductsByType(req, res) {
-        const { type } = req.params
-
-        try {
-            if (!type) {
-                return res.status(400).send({ error: "Product type is required" })
-            }
-            const products = await ProductController.findByType(type)
-            return res.status(200).send(products)
-        } catch (e) {
-            return res.status(400).send({ error: `Error to get products by type: ${e.message}` })
-        }
-    }
-
-    async findProductsBySegment(req, res) {
-        const { segment } = req.params
-
-        try {
-            if (!segment) {
-                return res.status(400).send({ error: "Segment is required" })
-            }
-            const products = await ProductController.findBySegment(segment)
-            return res.status(200).send(products)
-        } catch (e) {
-            return res.status(400).send({ error: `Error to get products by segment: ${e.message}` })
-        }
-    }
-
-    async findProductsByPriceRange(req, res) {
-        const { minPrice, maxPrice } = req.query
-
-        try {
-            if (!minPrice || !maxPrice) {
-                return res.status(400).send({ error: "Min price and max price are required" })
-            }
-            const products = await ProductController.findByPriceRange(Number(minPrice), Number(maxPrice))
-            return res.status(200).send(products)
-        } catch (e) {
-            return res.status(400).send({ error: `Error to get products by price range: ${e.message}` })
-        }
-    }
-
     async bulkCreateProducts(req, res) {
         const { products } = req.body
 

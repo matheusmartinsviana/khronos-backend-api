@@ -14,6 +14,7 @@ const ProductModel = database.define("Product", {
   code: {
     type: DataTypes.STRING,
     allowNull: true,
+    unique: true,
   },
   price: {
     type: DataTypes.DOUBLE,

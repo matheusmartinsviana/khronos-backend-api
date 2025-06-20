@@ -30,29 +30,6 @@ class ProductController {
         return ProductService.findByCode(code)
     }
 
-    async findByType(product_type) {
-        if (!product_type) throw new AppError("Product type is required", 400)
-        return ProductService.findByType(product_type)
-    }
-
-    async findBySegment(segment) {
-        if (!segment) throw new AppError("Segment is required", 400)
-        return ProductService.findBySegment(segment)
-    }
-
-    async findByPriceRange(minPrice, maxPrice) {
-        if (minPrice === undefined || maxPrice === undefined) {
-            throw new AppError("Min price and max price are required", 400)
-        }
-        if (minPrice < 0 || maxPrice < 0) {
-            throw new AppError("Prices must be positive numbers", 400)
-        }
-        if (minPrice > maxPrice) {
-            throw new AppError("Min price cannot be greater than max price", 400)
-        }
-        return ProductService.findByPriceRange(minPrice, maxPrice)
-    }
-
     async update(id, name, code, price, description, zoning, product_type, observation, segment, image, image_public_id) {
         if (!id) {
             throw new AppError("Id is required", 400)

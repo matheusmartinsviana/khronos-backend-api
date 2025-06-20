@@ -1,119 +1,145 @@
-const SaleService = require("../../../services/SaleService");
+const SaleService = require('../../../services/SaleService');
+const SaleRepository = require('../../../repositories/SaleRepository');
+const Product = require('../../../models/ProductModel');
+const Service = require('../../../models/ServiceModel');
+const Salesperson = require('../../../models/SalespersonModel');
+const Customer = require('../../../models/CustomerModel');
+const UserModel = require('../../../models/UserModel');
 
-const Salesperson = require("../../../models/SalespersonModel");
-const Customer = require("../../../models/CustomerModel");
-const Product = require("../../../models/ProductModel");
-const Service = require("../../../models/ServiceModel");
-const SaleRepository = require("../../../repositories/SaleRepository");
+jest.mock('../../../repositories/SaleRepository');
+jest.mock('../../../models/ProductModel');
+jest.mock('../../../models/ServiceModel');
+jest.mock('../../../models/SalespersonModel');
+jest.mock('../../../models/CustomerModel');
+jest.mock('../../../models/UserModel');
 
-jest.mock("../../../models/SalespersonModel");
-jest.mock("../../../models/CustomerModel");
-jest.mock("../../../models/ProductModel");
-jest.mock("../../../models/ServiceModel");
-jest.mock("../../../repositories/SaleRepository");
-
-describe("SaleService.createSale", () => {
+describe('SaleService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it("deve criar venda com sucesso com produtos válidos", async () => {
-        const inputData = {
-            seller_id: 1,
-            customer_id: 2,
-            products: [
-                { product_id: 10, product_price: 50.0, quantity: 2 },
-                { service_id: 20, product_price: 100.0, quantity: 1 }
-            ],
-            otherField: "some value"
-        };
+    const sampleData = {
+        seller_id: 1,
+        customer_id: 2,
+        produtos: [{ product_id: 1, quantidade: 2, price: 100.0 }],
+        servicos: [{ service_id: 1, quantidade: 1, price: 50.0 }],
+        additional_field: "valor",
+    };
 
-        Salesperson.findByPk.mockResolvedValue({ seller_id: 1 });
-        Customer.findByPk.mockResolvedValue({ customer_id: 2 });
+    describe('createSale', () => {
+        it('deve criar uma venda com produtos e serviços válidos', async () => {
+            Salesperson.findByPk.mockResolvedValue({ seller_id: 1 });
+            Customer.findByPk.mockResolvedValue({ customer_id: 2 });
 
-        Product.findAll.mockResolvedValue([{ product_id: 10 }]);
-        Service.findAll.mockResolvedValue([{ service_id: 20 }]);
+            Product.findAll.mockResolvedValue([{ product_id: 1 }]);
+            Service.findAll.mockResolvedValue([{ service_id: 1 }]);
 
-        SaleRepository.create.mockResolvedValue({ sale_id: 123, ...inputData });
-        SaleRepository.createProductSales.mockResolvedValue();
+            SaleRepository.create.mockResolvedValue({ sale_id: 10 });
 
-        const result = await SaleService.createSale(inputData);
+            SaleRepository.createProductSales.mockResolvedValue(true);
+            SaleRepository.createServiceSales.mockResolvedValue(true);
 
-        expect(Salesperson.findByPk).toHaveBeenCalledWith(1);
-        expect(Customer.findByPk).toHaveBeenCalledWith(2);
-        expect(Product.findAll).toHaveBeenCalledWith({ where: { product_id: [10] } });
-        expect(Service.findAll).toHaveBeenCalledWith({ where: { service_id: [20] } });
+            const result = await SaleService.createSale(sampleData);
+            expect(result.sale_id).toBe(10);
+            expect(SaleRepository.createProductSales).toHaveBeenCalled();
+            expect(SaleRepository.createServiceSales).toHaveBeenCalled();
+        });
 
-        expect(SaleRepository.create).toHaveBeenCalledWith(expect.objectContaining({
-            seller_id: 1,
-            customer_id: 2,
-            otherField: "some value"
-        }));
+        it('deve lançar erro se o vendedor não existir', async () => {
+            Salesperson.findByPk.mockResolvedValue(null);
+            await expect(SaleService.createSale(sampleData)).rejects.toThrow("Vendedor não encontrado");
+        });
 
-        expect(SaleRepository.createProductSales).toHaveBeenCalledWith(expect.arrayContaining([
-            expect.objectContaining({ product_id: 10, sale_id: 123 }),
-            expect.objectContaining({ service_id: 20, sale_id: 123 }),
-        ]));
+        it('deve lançar erro se o cliente não existir', async () => {
+            Salesperson.findByPk.mockResolvedValue({});
+            Customer.findByPk.mockResolvedValue(null);
+            await expect(SaleService.createSale(sampleData)).rejects.toThrow("Cliente não encontrado");
+        });
 
-        expect(result.sale_id).toBe(123);
+        it('deve lançar erro se algum produto for inválido', async () => {
+            Salesperson.findByPk.mockResolvedValue({});
+            Customer.findByPk.mockResolvedValue({});
+            Product.findAll.mockResolvedValue([]); // nenhum produto válido
+            await expect(SaleService.createSale(sampleData)).rejects.toThrow("Um ou mais produtos são inválidos");
+        });
+
+        it('deve lançar erro se algum serviço for inválido', async () => {
+            Salesperson.findByPk.mockResolvedValue({});
+            Customer.findByPk.mockResolvedValue({});
+            Product.findAll.mockResolvedValue([{ product_id: 1 }]);
+            Service.findAll.mockResolvedValue([]); // nenhum serviço válido
+            await expect(SaleService.createSale(sampleData)).rejects.toThrow("Um ou mais serviços são inválidos");
+        });
     });
 
-    it("deve lançar erro quando vendedor não for encontrado", async () => {
-        Salesperson.findByPk.mockResolvedValue(null);
-
-        await expect(SaleService.createSale({
-            seller_id: 999,
-            customer_id: 1,
-            products: []
-        })).rejects.toThrow("Vendedor não encontrado");
-
-        expect(Salesperson.findByPk).toHaveBeenCalledWith(999);
+    describe('getSales', () => {
+        it('deve retornar todas as vendas', async () => {
+            SaleRepository.findAll.mockResolvedValue([{ id: 1 }, { id: 2 }]);
+            const result = await SaleService.getSales();
+            expect(result.length).toBe(2);
+        });
     });
 
-    it("deve lançar erro quando cliente não for encontrado", async () => {
-        Salesperson.findByPk.mockResolvedValue({ seller_id: 1 });
-        Customer.findByPk.mockResolvedValue(null);
+    describe('getSaleById', () => {
+        it('deve retornar a venda se existir', async () => {
+            SaleRepository.findById.mockResolvedValue({ sale_id: 1 });
+            const sale = await SaleService.getSaleById(1);
+            expect(sale.sale_id).toBe(1);
+        });
 
-        await expect(SaleService.createSale({
-            seller_id: 1,
-            customer_id: 999,
-            products: []
-        })).rejects.toThrow("Cliente não encontrado");
-
-        expect(Customer.findByPk).toHaveBeenCalledWith(999);
+        it('deve lançar erro se a venda não existir', async () => {
+            SaleRepository.findById.mockResolvedValue(null);
+            await expect(SaleService.getSaleById(1)).rejects.toThrow("Venda não encontrada");
+        });
     });
 
-    it("deve lançar erro quando produto inválido", async () => {
-        Salesperson.findByPk.mockResolvedValue({ seller_id: 1 });
-        Customer.findByPk.mockResolvedValue({ customer_id: 1 });
+    describe('updateSale', () => {
+        it('deve atualizar uma venda existente', async () => {
+            SaleRepository.findById.mockResolvedValue({ sale_id: 1 });
+            SaleRepository.update.mockResolvedValue({ sale_id: 1, updated: true });
 
-        Product.findAll.mockResolvedValue([{ product_id: 10 }]); // só encontrou produto 10
-        Service.findAll.mockResolvedValue([]); // nenhum serviço encontrado
-
-        await expect(SaleService.createSale({
-            seller_id: 1,
-            customer_id: 1,
-            products: [
-                { product_id: 10, product_price: 50, quantity: 1 },
-                { product_id: 999, product_price: 100, quantity: 1 } // inválido
-            ]
-        })).rejects.toThrow("Um ou mais produtos/serviços são inválidos");
+            const result = await SaleService.updateSale(1, { total: 100 });
+            expect(result.updated).toBe(true);
+        });
     });
 
-    it("deve lançar erro quando serviço inválido", async () => {
-        Salesperson.findByPk.mockResolvedValue({ seller_id: 1 });
-        Customer.findByPk.mockResolvedValue({ customer_id: 1 });
+    describe('deleteSale', () => {
+        it('deve deletar uma venda existente', async () => {
+            SaleRepository.findById.mockResolvedValue({ sale_id: 1 });
+            SaleRepository.delete.mockResolvedValue(true);
 
-        Product.findAll.mockResolvedValue([]);
-        Service.findAll.mockResolvedValue([{ service_id: 20 }]); // só serviço 20 válido
+            const result = await SaleService.deleteSale(1);
+            expect(result).toBe(true);
+        });
+    });
 
-        await expect(SaleService.createSale({
-            seller_id: 1,
-            customer_id: 1,
-            products: [
-                { service_id: 20, product_price: 100, quantity: 1 },
-                { service_id: 999, product_price: 50, quantity: 1 } // inválido
-            ]
-        })).rejects.toThrow("Um ou mais produtos/serviços são inválidos");
+    describe('getSalesByCurrentUserId', () => {
+        it('deve retornar vendas para um vendedor existente', async () => {
+            Salesperson.findOne.mockResolvedValue({ seller_id: 1 });
+            SaleRepository.findBySellerId.mockResolvedValue([{ sale_id: 1 }]);
+
+            const result = await SaleService.getSalesByCurrentUserId(1);
+            expect(result.length).toBe(1);
+        });
+
+        it('deve criar vendedor se usuário for admin', async () => {
+            Salesperson.findOne.mockResolvedValue(null);
+            UserModel.findByPk.mockResolvedValue({ user_id: 5, name: 'Admin', role: 'admin' });
+            Salesperson.create.mockResolvedValue({ seller_id: 99 });
+            SaleRepository.findBySellerId.mockResolvedValue([]);
+
+            const result = await SaleService.getSalesByCurrentUserId(5);
+            expect(result).toEqual([]);
+        });
+
+        it('deve lançar erro se usuário não for encontrado', async () => {
+            Salesperson.findOne.mockResolvedValue(null);
+            UserModel.findByPk.mockResolvedValue(null);
+            await expect(SaleService.getSalesByCurrentUserId(999)).rejects.toThrow("Usuário não encontrado");
+        });
+
+        it('deve lançar erro se ID for inválido', async () => {
+            await expect(SaleService.getSalesByCurrentUserId("abc")).rejects.toThrow("ID do usuário inválido");
+        });
     });
 });
