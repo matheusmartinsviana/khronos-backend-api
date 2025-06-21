@@ -3,7 +3,6 @@ const user = require("../models/UserModel");
 const { hashPassword, comparePassword } = require("../utils/hash");
 const { generateToken } = require("../utils/jwt");
 const AppError = require("../errors/AppError");
-const UserModel = require("../models/UserModel");
 const SalespersonRepository = require("../repositories/SalespersonRepository");
 const SalespersonModel = require("../models/SalespersonModel");
 

@@ -172,10 +172,8 @@ class ProductService {
     }
 
     async deleteAll() {
-        // Buscar todos os produtos para deletar suas imagens do Cloudinary
         const products = await this.productRepository.findAll()
 
-        // Deletar imagens do Cloudinary
         for (const product of products) {
             if (product.image_public_id) {
                 await ImageUploadService.deleteImage(product.image_public_id)
