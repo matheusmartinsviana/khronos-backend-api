@@ -42,7 +42,15 @@ class EnvironmentController {
     }
 
     async find() {
-        return EnvironmentService.find();
+        console.log("Finding all environments");
+
+        const environments = await EnvironmentService.find();
+
+        if (!environments || environments.length === 0) {
+            throw new AppError("No environments found", 404);
+        }
+
+        return environments;
     }
 
     async bulkCreate(environments) {
