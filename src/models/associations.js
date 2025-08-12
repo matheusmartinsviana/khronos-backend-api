@@ -9,6 +9,7 @@ const Service = require("./ServiceModel");
 const Sale = require("./SaleModel");
 const ProductSale = require("./ProductSaleModel");
 const ServiceSale = require("./ServiceSaleModel");
+const Environment = require("./EnvironmentModel");
 
 // USER ↔ SALESPERSON (1:1)
 User.hasOne(Salesperson, { foreignKey: "user_id", onDelete: "CASCADE" });
@@ -45,6 +46,15 @@ ServiceSale.belongsTo(Sale, { foreignKey: "sale_id" });
 // SERVICE ↔ SERVICE_SALE (1:N)
 Service.hasMany(ServiceSale, { foreignKey: "service_id", onDelete: "CASCADE" });
 ServiceSale.belongsTo(Service, { foreignKey: "service_id" });
+
+Environment.hasMany(Sale, { foreignKey: "environment_id", onDelete: 'CASCADE' });
+Sale.belongsTo(Environment, { foreignKey: "environment_id" });
+
+Environment.hasMany(Product, { foreignKey: "environment_id", onDelete: 'CASCADE' });
+Product.belongsTo(Environment, { foreignKey: "environment_id" });
+
+Environment.hasMany(Service, { foreignKey: "environment_id", onDelete: 'CASCADE' });
+Service.belongsTo(Environment, { foreignKey: "environment_id" });
 
 module.exports = {
     sequelize,

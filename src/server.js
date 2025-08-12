@@ -12,6 +12,7 @@ const productRouter = require("./routes/ProductRoutes");
 const categoryRouter = require("./routes/CategoryRoutes");
 const authRoutes = require("./routes/AuthRoutes");
 const emailRoutes = require("./routes/emailRoutes");
+const { ensureDefaultEnvironment, ensureDefaultCategory } = require("./utils/InitialData");
 
 require("./models/associations");
 
@@ -39,8 +40,10 @@ app.get("/", (_, res) => {
 const startServer = async () => {
   try {
     await database.authenticate();
-
     console.log("Database connected and synced successfully ✅");
+
+    await ensureDefaultCategory();
+    await ensureDefaultEnvironment();
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running at http://localhost:${PORT}`);
