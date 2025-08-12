@@ -1,0 +1,22 @@
+meta {
+  name: Delete
+  type: http
+  seq: 3
+}
+
+delete {
+  url: http://localhost:8000/api/v1/environment/2
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6InNhbGVzcGVyc29uIiwiaWF0IjoxNzU1MDQwOTM1LCJleHAiOjE3NTUwODQxMzV9.hIsJ9CS0WEEr-BMKqSSXG5IHQ6xiHBnBDVu9IDnLYgo
+}
+
+body:json {
+  {
+    "name": "testeapi",
+    "description": "default"
+  }
+}
