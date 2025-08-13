@@ -11,5 +11,4 @@ router.put("/:id", authMiddleware(), SaleController.update);
 router.delete("/:id", authMiddleware(), SaleController.delete);
 router.get("/getSales/:id", authMiddleware(), SaleController.getSalesById);
 
-
 module.exports = router;
