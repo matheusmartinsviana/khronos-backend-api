@@ -6,6 +6,10 @@ API RESTful para processar vendas e centralizar dados dessas vendas fazendo o us
 
 ---
 
+## Docker Hub Image
+
+[Docker Hub – khronos-api](https://hub.docker.com/repository/docker/matheusmartinsviana/khronos-api/image-management)
+
 ## 📁 Estrutura do Projeto
 
 ```
