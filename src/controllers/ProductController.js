@@ -85,6 +85,11 @@ class ProductController {
             throw new AppError(`Error searching top products: ${e.message}`, 400)
         }
     }
+
+    async findProductsByEnvironment(environmentId) {
+        if (!environmentId) throw new AppError("Environment ID is required", 400)
+        return ProductService.findProductsByEnvironment(environmentId)
+    }
 }
 
 module.exports = new ProductController()

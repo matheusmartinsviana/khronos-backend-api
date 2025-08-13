@@ -20,6 +20,20 @@ class ServiceApi {
         }
     }
 
+    async findServiceByEnvironment(req, res) {
+        const { id } = req.params;
+
+        try {
+            if (!id) {
+                return res.status(400).send({ error: "Environment ID is required" });
+            }
+            const services = await ServiceController.findByEnvironment(id);
+            return res.status(200).send(services);
+        } catch (e) {
+            return res.status(400).send({ error: `Error retrieving services by environment: ${e.message}` });
+        }
+    }
+
     async getAllServices(req, res) {
         try {
             const services = await ServiceController.findAll();

@@ -5,6 +5,7 @@ const authMiddleware = require("../middlewares/auth");
 
 router.post("/", authMiddleware(), ServiceApi.createService);
 router.get("/", authMiddleware(), ServiceApi.getAllServices);
+router.get("/search/environment/:id", authMiddleware(), ServiceApi.findServiceByEnvironment);
 router.get("/:id", authMiddleware(), ServiceApi.getServiceById);
 router.put("/:id", authMiddleware(), ServiceApi.updateService);
 router.delete("/:id", authMiddleware(), ServiceApi.deleteService);

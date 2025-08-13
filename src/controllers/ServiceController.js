@@ -14,6 +14,10 @@ class ServiceController {
         return await ServiceService.findAll();
     }
 
+    async findByEnvironment(environmentId) {
+        return await ServiceService.findByEnvironment(environmentId);
+    }
+
     async update(id, data) {
         return await ServiceService.update(id, data);
     }

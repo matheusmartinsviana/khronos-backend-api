@@ -49,6 +49,13 @@ class ProductRepository {
         return await this.ProductModel.findAll()
     }
 
+    async findByEnvironment(environmentId) {
+        if (!environmentId) throw new Error("Environment ID is required")
+        return await this.ProductModel.findAll({
+            where: { environment_id: environmentId },
+        })
+    }
+
     async update(id, updateData) {
         const product = await this.ProductModel.findByPk(id)
         if (!product) {

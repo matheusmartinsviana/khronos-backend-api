@@ -28,6 +28,15 @@ const SaleController = {
         }
     },
 
+    getSalesByEnvironment: async (req, res) => {
+        try {
+            const sales = await SaleService.getSalesByEnvironment(req.params.id);
+            res.status(200).json(sales);
+        } catch (err) {
+            res.status(404).json({ error: err.message });
+        }
+    },
+
     update: async (req, res) => {
         try {
             await SaleService.updateSale(req.params.id, req.body);

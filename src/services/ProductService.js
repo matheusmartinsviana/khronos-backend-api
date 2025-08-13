@@ -82,6 +82,12 @@ class ProductService {
         return found
     }
 
+    async findByEnvironment(environmentId) {
+        if (!environmentId) throw new AppError("Environment ID is required", 400)
+        //search all where environment_id = environmentId
+        return this.productRepository.findByEnvironment(environmentId)
+    }
+
     async update(id, name, code, price, description, zoning, product_type, observation, segment, image, image_public_id) {
         if (!id) {
             throw new AppError("Id is required", 400)
@@ -189,6 +195,11 @@ class ProductService {
         } catch (e) {
             throw new AppError(`Error searching top products: ${e.message}`, 400)
         }
+    }
+
+    async findProductsByEnvironment(environmentId) {
+        if (!environmentId) throw new AppError("Environment ID is required", 400)
+        return this.productRepository.findByEnvironment(environmentId)
     }
 }
 

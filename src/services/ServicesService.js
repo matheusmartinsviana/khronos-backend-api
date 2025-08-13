@@ -37,6 +37,11 @@ class ServiceService {
         const deleted = await ServiceRepository.delete(id);
         if (!deleted) throw new AppError("Service not found or not deleted", 404);
     }
+
+    async findByEnvironment(environmentId) {
+        if (!environmentId) throw new AppError("Environment ID is required", 400);
+        return await ServiceRepository.findByEnvironment(environmentId);
+    }
 }
 
 module.exports = new ServiceService();

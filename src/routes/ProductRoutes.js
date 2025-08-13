@@ -8,6 +8,7 @@ router.get("/", ProductApi.findProducts)
 router.get("/:id", ProductApi.findProductById)
 router.get("/:id/image-variations", ProductApi.getImageVariations)
 router.get("/search/top", ProductApi.searchTopProducts)
+router.get("/search/environment/:id", ProductApi.findProductsByEnvironment)
 
 router.post("/", authMiddleware(), ProductApi.uploadSingle(), ProductApi.createProduct)
 router.put("/:id", authMiddleware(), ProductApi.uploadSingle(), ProductApi.updateProduct)
