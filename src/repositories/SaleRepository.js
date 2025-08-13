@@ -59,6 +59,11 @@ const SaleRepository = {
         ]
     }),
 
+    findByEnvironment: async (environmentId) => {
+        if (!environmentId) throw new Error("Environment ID is required");
+        return await Sale.findAll({ where: { environment_id: environmentId } });
+    },
+
     update: (id, data) => Sale.update(data, { where: { sale_id: id } }),
 
     delete: async (id) => {

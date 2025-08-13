@@ -171,6 +171,20 @@ class ProductApi {
         }
     }
 
+    async findProductsByEnvironment(req, res) {
+        const { id } = req.params
+
+        try {
+            if (!id) {
+                return res.status(400).send({ error: "Environment ID is required" })
+            }
+            const products = await ProductController.findProductsByEnvironment(id)
+            return res.status(200).send(products)
+        } catch (e) {
+            return res.status(400).send({ error: `Error to get products by environment: ${e.message}` })
+        }
+    }
+
     async bulkCreateProducts(req, res) {
         const { products } = req.body
 

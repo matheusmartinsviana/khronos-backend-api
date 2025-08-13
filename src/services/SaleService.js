@@ -97,6 +97,11 @@ const SaleService = {
         return sale;
     },
 
+    getSalesByEnvironment: async (environmentId) => {
+        if (!environmentId) throw new Error("Environment ID is required");
+        return await SaleRepository.findByEnvironment(environmentId);
+    },
+
     updateSale: async (id, data) => {
         await SaleService.getSaleById(id);
         return await SaleRepository.update(id, data);

@@ -10,6 +10,8 @@ const ServiceRepository = {
     update: (id, data) => ServiceModel.update(data, { where: { service_id: id } }),
 
     delete: (id) => ServiceModel.destroy({ where: { service_id: id } }),
+
+    findByEnvironment: (environmentId) => ServiceModel.findAll({ where: { environment_id: environmentId } })
 };
 
 module.exports = ServiceRepository;
