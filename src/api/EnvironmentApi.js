@@ -1,104 +1,246 @@
-const EnvironmentController = require("../controllers/EnvironmentController")
+const EnvironmentController = require("../controllers/EnvironmentController");
 
 class EnvironmentApi {
-    async createEnvironment(req, res) {
-        const { name, description } = req.body
+    _validateId(id) {
+        if (!id || isNaN(Number(id))) {
+            throw new Error("Valid ID is required");
+        }
+        return Number(id);
+    }
 
+    _validateName(name) {
+        if (!name || typeof name !== 'string' || name.trim().length === 0) {
+            throw new Error("Valid name is required");
+        }
+        return name.trim();
+    }
+
+    _validateEnvironmentData(data) {
+        const { name, description } = data;
+
+        const validatedName = this._validateName(name);
+
+        return {
+            name: validatedName,
+            description: description?.trim() || null
+        };
+    }
+
+    _handleError(res, error, defaultMessage = "Internal server error") {
+        console.error(`EnvironmentApi Error: ${error.message}`, error);
+
+        const statusCode = error.statusCode || 400;
+        const message = error.message || defaultMessage;
+
+        return res.status(statusCode).json({
+            error: message,
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    async createEnvironment(req, res) {
         try {
-            const environment = await EnvironmentController.create(name, description)
-            return res.status(201).send(environment)
-        } catch (e) {
-            return res.status(400).send({ error: e.message })
+            const validatedData = this._validateEnvironmentData(req.body);
+
+            const environment = await EnvironmentController.create(
+                validatedData.name,
+                validatedData.description
+            );
+
+            return res.status(201).json({
+                success: true,
+                data: environment,
+                message: "Environment created successfully"
+            });
+        } catch (error) {
+            return this._handleError(res, error, "Error creating environment");
         }
     }
 
     async updateEnvironment(req, res) {
-        const { id } = req.params
-        const { name, description } = req.body
-
         try {
-            const environment = await EnvironmentController.update(id, name, description)
-            return res.status(200).send(environment)
-        } catch (e) {
-            return res.status(400).send({ error: `Error updating environment: ${e.message}` })
+            const id = this._validateId(req.params.id);
+            const validatedData = this._validateEnvironmentData(req.body);
+
+            const environment = await EnvironmentController.update(
+                id,
+                validatedData.name,
+                validatedData.description
+            );
+
+            if (!environment) {
+                return res.status(404).json({
+                    success: false,
+                    error: "Environment not found"
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                data: environment,
+                message: "Environment updated successfully"
+            });
+        } catch (error) {
+            return this._handleError(res, error, "Error updating environment");
         }
     }
 
     async deleteEnvironment(req, res) {
         try {
-            const { id } = req.params
+            const id = this._validateId(req.params.id);
 
-            await EnvironmentController.delete(Number(id))
-            return res.status(204).send()
-        } catch (e) {
-            return res.status(400).send({ error: `Error deleting environment: ${e.message}` })
+            const deleted = await EnvironmentController.delete(id);
+
+            if (!deleted) {
+                return res.status(404).json({
+                    success: false,
+                    error: "Environment not found"
+                });
+            }
+
+            return res.status(204).send();
+        } catch (error) {
+            return this._handleError(res, error, "Error deleting environment");
         }
     }
 
     async findEnvironments(req, res) {
         try {
-            const environments = await EnvironmentController.find()
-            return res.status(200).send(environments)
-        } catch (e) {
-            return res.status(400).send({ error: `Error listing environments: ${e.message}` })
+            const { page = 1, limit = 10, search } = req.query;
+            const options = {
+                page: Number(page),
+                limit: Number(limit),
+                search: search?.trim()
+            };
+
+            const environments = await EnvironmentController.find(options);
+
+            return res.status(200).json({
+                success: true,
+                data: environments,
+                message: "Environments retrieved successfully"
+            });
+        } catch (error) {
+            return this._handleError(res, error, "Error listing environments");
         }
     }
 
     async findEnvironmentById(req, res) {
-        const { id } = req.params
-
         try {
-            if (!id) {
-                return res.status(400).send({ error: "Id is required" })
+            const id = this._validateId(req.params.id);
+
+            const environment = await EnvironmentController.findEnvironment(id);
+
+            if (!environment) {
+                return res.status(404).json({
+                    success: false,
+                    error: "Environment not found"
+                });
             }
-            const environment = await EnvironmentController.findEnvironment(id)
-            return res.status(200).send(environment)
-        } catch (e) {
-            return res.status(400).send({ error: `Error to get environment: ${e.message}` })
+
+            return res.status(200).json({
+                success: true,
+                data: environment,
+                message: "Environment retrieved successfully"
+            });
+        } catch (error) {
+            return this._handleError(res, error, "Error retrieving environment");
         }
     }
 
     async findEnvironmentByName(req, res) {
-        const { name } = req.params
-
         try {
-            if (!name) {
-                return res.status(400).send({ error: "Name is required" })
+            const name = this._validateName(req.params.name);
+
+            const environment = await EnvironmentController.findByName(name);
+
+            if (!environment) {
+                return res.status(404).json({
+                    success: false,
+                    error: "Environment not found"
+                });
             }
-            const environment = await EnvironmentController.findByName(name)
-            return res.status(200).send(environment)
-        } catch (e) {
-            return res.status(400).send({ error: `Error to get environment by name: ${e.message}` })
+
+            return res.status(200).json({
+                success: true,
+                data: environment,
+                message: "Environment retrieved successfully"
+            });
+        } catch (error) {
+            return this._handleError(res, error, "Error retrieving environment by name");
         }
     }
 
     async bulkCreateEnvironments(req, res) {
-        const { environments } = req.body
-
         try {
-            if (!environments || !Array.isArray(environments)) {
-                return res.status(400).send({ error: "Environments array is required" })
+            const { environments } = req.body;
+
+            if (!environments || !Array.isArray(environments) || environments.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Valid environments array is required"
+                });
             }
-            const createdEnvironments = await EnvironmentController.bulkCreate(environments)
-            return res.status(201).send(createdEnvironments)
-        } catch (e) {
-            return res.status(400).send({ error: `Error creating environments in bulk: ${e.message}` })
+
+            const validatedEnvironments = environments.map(env => {
+                if (typeof env === 'string') {
+                    return { name: this._validateName(env), description: null };
+                } else if (env?.name) {
+                    return this._validateEnvironmentData(env);
+                } else {
+                    throw new Error("Each environment must have a valid name");
+                }
+            });
+
+            const createdEnvironments = await EnvironmentController.bulkCreate(validatedEnvironments);
+
+            return res.status(201).json({
+                success: true,
+                data: createdEnvironments,
+                message: `${createdEnvironments.length} environments created successfully`
+            });
+        } catch (error) {
+            return this._handleError(res, error, "Error creating environments in bulk");
         }
     }
 
     async getProductsByEnvironment(req, res) {
-        const { id } = req.params
-
         try {
-            if (!id) {
-                return res.status(400).send({ error: "Environment id is required" })
-            }
-            const products = await ProductController.getProductsByEnvironment(id)
-            return res.status(200).send(products)
-        } catch (e) {
-            return res.status(400).send({ error: `Error getting products by environment: ${e.message}` })
+            const id = this._validateId(req.params.id);
+            const { page = 1, limit = 10 } = req.query;
+
+            const options = {
+                page: Number(page),
+                limit: Number(limit)
+            };
+
+            const products = await EnvironmentController.getProductsByEnvironment(id, options);
+
+            return res.status(200).json({
+                success: true,
+                data: products,
+                message: "Products retrieved successfully"
+            });
+        } catch (error) {
+            return this._handleError(res, error, "Error retrieving products by environment");
+        }
+    }
+
+    async getEnvironmentStats(req, res) {
+        try {
+            const id = this._validateId(req.params.id);
+
+            const stats = await EnvironmentController.getEnvironmentStats(id);
+
+            return res.status(200).json({
+                success: true,
+                data: stats,
+                message: "Environment statistics retrieved successfully"
+            });
+        } catch (error) {
+            return this._handleError(res, error, "Error retrieving environment statistics");
         }
     }
 }
 
-module.exports = new EnvironmentApi()
+module.exports = new EnvironmentApi();
